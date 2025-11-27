@@ -1,0 +1,70 @@
+# <!-- [SS-1.0]: Application-Core ----->
+# /1.1/ Secrets
+*.key
+*.pem
+*.crt
+secrets.env
+.env.local
+.env.production
+.env.development
+*.db
+*.git
+
+# /1.2/ Logs & Tempoerary
+*.log
+*.tmp
+*.swp
+*.swo
+*.bak
+
+# /1.3/ Containers
+*.tar
+*.img
+*.qcow2
+
+# /1.4/ IDE
+.vscode/**
+.idea/
+*.code-workspace
+*.pylintrc
+*.dic
+*.code-snippets
+
+# /1.5/ Potential OS-Crap
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# <!-- [SS-2.0]: Language ----->
+# // [1] Rust
+**/target/**
+**/*.rs.bk
+Cargo.lock
+
+# // [2] Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pytest_cache/
+*.ipynb_checkpoints/
+.env
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# // [3] Node | Next.js
+/ui/node_modules/
+/ui/.next/
+/ui/out/
+/ui/.npm/
+
+# // [4] Terraform
+/infra/.terraform/
+/infra/terraform.tfstate
+/infra/terraform.tfstate.backup
+
+# // [5] Ngnix
+/infra/nginx/*.generated.conf
