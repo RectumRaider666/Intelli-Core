@@ -36,12 +36,12 @@ Thumbs.db
 desktop.ini
 
 # <!-- [SS-2.0]: Language ----->
-# // [1] Rust
+# /2.1/ Rust
 **/target/**
 **/*.rs.bk
 Cargo.lock
 
-# // [2] Python
+# /2.2/ Python
 __pycache__/
 *.py[cod]
 *.pyo
@@ -55,16 +55,16 @@ env/
 dist/
 build/
 
-# // [3] Node | Next.js
+# /2.3/ Node & Next.js
 /ui/node_modules/
 /ui/.next/
 /ui/out/
 /ui/.npm/
 
-# // [4] Terraform
+# /2.4/ Terraform
 /infra/.terraform/
 /infra/terraform.tfstate
 /infra/terraform.tfstate.backup
 
-# // [5] Ngnix
+# /2.5/ Ngnix
 /infra/nginx/*.generated.conf
