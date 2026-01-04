@@ -40,6 +40,6 @@
         <li> [ ] Feature 2: A Downloadable TamperMonkey User-Script that works with the Kalshi HTML-DOM to switch buttons on_click() over to our Paper-Trading Practice Script, letting you learn to trade on Kalshi using the direct service but with no risk! This is used in house to teach mods the strategies and live-test their skills, but anyone can use it broadly for practice</li><br>
         <li> [ ] Feature 3: A SHA256-BTC Wallet Creator with different options like a free generic wallet or a cold-storage physical card/token laser engraved with your keys in qr code & string</li><br>
         <li> [x] Feature 4: Paste a link to attempt to gather all the media from the page and compile it into a zip for easy downloading</li><br>
-        <li> [ ] Feature 5: An (PNG/JPEG|ICO/SVG|Gifs|MP3/OGG|WAV/MP4 + More) Drag and drop a file or an entire folder to convert all of its targeted contents to a specified format, quality, and meta-data</li><br>
+        <li> [x] Feature 5: An (PNG/JPEG|ICO/SVG|Gifs|MP3/OGG|WAV/MP4 + More) Drag and drop a file or an entire folder to convert all of its targeted contents to a specified format, quality, and meta-data</li><br>
     </ul>
 </div><hr>
