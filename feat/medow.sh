@@ -3,7 +3,7 @@
 VERSION="0.3.12-B"
 DESC="Download target media files from URLs"
 
-DEF_OUT="${HOME}/.local/bin/results"
+DEF_OUT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/results"
 DEF_TYPE="all"
 OUT="${MEDOW_OUT:-$DEF_OUT}"
 MIME_TYPE="${MEDOW_TYPE:-$DEF_TYPE}"
