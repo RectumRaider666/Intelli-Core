@@ -204,7 +204,7 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--src", help="Source file or directory")
     p.add_argument("--out", "-o", required=True, type=_norm_ext, help="Output extension (e.g., png, ogg, wmv)")
     p.add_argument("--input", "-i", default="any", type=_norm_ext, help="Input extension to filter (default: any)")
-    p.add_argument("--dest", help="Output directory (default: same as src file/dir)")
+    p.add_argument("--dest", help="Output directory (default: results folder next to m2m)")
     p.add_argument("--dir", "-d", dest="src", help="Alias for --src (directory)")
     p.add_argument("--res", "-r", dest="dest", help="Alias for --dest")
     p.add_argument("--overwrite", action="store_true", help="Overwrite existing outputs")
@@ -222,10 +222,7 @@ def main(argv: list[str] | None = None) -> int:
     in_ext = args.input
     if args.timeout <= 0:
         raise SystemExit("--timeout must be positive")
-    if os.path.isfile(src):
-        default_dest = os.path.dirname(src)
-    else:
-        default_dest = src
+    default_dest = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results")
     dest = os.path.abspath(os.path.expanduser(args.dest)) if args.dest else default_dest
     os.makedirs(dest, exist_ok=True)
     files = list(iter_in(src, in_ext))
