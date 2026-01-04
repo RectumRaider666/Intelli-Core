@@ -36,7 +36,7 @@
     </ul>
     <h2>Planned User Features :</h2>
     <ul>
-        <li> [ ] Feature 1: A Personalized Code-Server that can be spun up by the user and the dynamic url can be shared to anyone for collaboration. This is almost complete but it needs to be sand-boxed before given an End-Point to the domain, and </li><br>
+        <li> [ ] Feature 1: A Personalized Code-Server that can be spun up by the user and the dynamic url can be shared to anyone for collaboration. This is almost complete but it needs to be sand-boxed before given an End-Point to the domain</li><br>
         <li> [ ] Feature 2: A Downloadable TamperMonkey User-Script that works with the Kalshi HTML-DOM to switch buttons on_click() over to our Paper-Trading Practice Script, letting you learn to trade on Kalshi using the direct service but with no risk! This is used in house to teach mods the strategies and live-test their skills, but anyone can use it broadly for practice</li><br>
         <li> [ ] Feature 3: A SHA256-BTC Wallet Creator with different options like a free generic wallet or a cold-storage physical card/token laser engraved with your keys in qr code & string</li><br>
         <li> [x] Feature 4: Paste a link to attempt to gather all the media from the page and compile it into a zip for easy downloading</li><br>
