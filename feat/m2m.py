@@ -13,7 +13,7 @@ import tempfile
 import traceback
 from typing import Any, Final, Iterable, cast
 
-VERSION: Final[str] = "1.0.1"
+VERSION: Final[str] = "1.0.2"
 logger = logging.getLogger("m2m")
 MP3_BITRATE: Final[str] = "320k"
 AAC_BITRATE: Final[str] = "256k"
@@ -196,8 +196,11 @@ def convert(src_path: str, out_ext: str, dest_dir: str, overwrite: bool, timeout
 
 def main(argv: list[str] | None = None) -> int:
     argv = sys.argv[1:] if argv is None else argv
+    if "--version" in argv:
+        print(f"{os.path.basename(sys.argv[0])} {VERSION}")
+        return 0
     p = argparse.ArgumentParser(description="Bulk/single-file media converter")
-    p.add_argument("--version", action="version", version=f"%(prog)s {VERSION}")
+    p.add_argument("--version", action="store_true", help="Print version")
     p.add_argument("--src", help="Source file or directory")
     p.add_argument("--out", "-o", required=True, type=_norm_ext, help="Output extension (e.g., png, ogg, wmv)")
     p.add_argument("--input", "-i", default="any", type=_norm_ext, help="Input extension to filter (default: any)")
@@ -208,7 +211,10 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--timeout", type=int, default=900, help="ffmpeg timeout in seconds (default: 900)")
     p.add_argument("--verbose", "-v", action="store_true", help="Verbose logging")
     args = p.parse_args(argv)
-    logging.basicConfig(level=logging.DEBUG if args.verbose else logging.INFO, format="[%(levelname)s] %(message)s")
+    if args.version:
+        print(f"{os.path.basename(sys.argv[0])} {VERSION}")
+        return 0
+    logging.basicConfig(level=logging.DEBUG if args.verbose else logging.INFO, format="%(message)s")
     if not args.src:
         raise SystemExit("--src/--dir is required")
     src = os.path.abspath(os.path.expanduser(args.src))
