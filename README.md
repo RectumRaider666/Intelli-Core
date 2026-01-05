@@ -29,10 +29,10 @@
 <div id="feat" width=100%>
     <h2>The Origin Features :</h2>
     <ul>
-        <li> [ ] Feature 1: A customizable user registration & authentication system. NOTE!! Trading REQUIRES ALL of the following [A LEGALLY BINDING & NOTARY STAMPED PERSONAL LOAN AGREEMENT] + [Signed Terms of Service & Conditions] + [Acknowledgements of FULL Understanding & Personal Responsibility]</li>
-        <li> [ ] Feature 2: A House-Built Central AI Trading Bot that uses custom built strategies and worker child-nodes to gather data and trade on the market. With All-Time Trade History and Logs. It contains multiple different strategies that passed testing with an above 85% Rate and a max Drawdown-Rate of 15%-35% (Risk dependant) across a minimum of 1,000 Live-PaperTrades, will then listed as an investible INDEX, with performances and in-depth explanations of what this strategy is aiming for</li>
-        <li> [ ] Feature 3: A Web-Based Dashboard that allows user to monitor their portfolio, and any relevant ai trading statuses, and TONS of backed-up logs tracking everything done by the user and the results, and views into what a particular Index is doing or targeting.</li>
-        <li> [ ] Feature 4: SHA256-BTC Transactions ONLY supported as of now and for the for-seeable future so we don't have to charge a commission on deposits & withdraws.</li>
+        <li> [ ] Feature 1: A customizable user registration & authentication system.</li>
+        <li> [ ] Feature 2: A House-Built Central AI Trading Bot that uses custom built strategies and worker child-nodes to gather data and trade on the market. With All-Time Trade History and Logs.</li>
+        <li> [ ] Feature 3: A Web-Based Dashboard that allows user to monitor their paper-portfolio, and get indepth insight of their trades and account over time.</li>
+        <li> [ ] Feature 4: SHA256-BTC Transactions ONLY supported as of now and for the for-seeable future so we don't have to charge a commission on deposits & withdraws, so that when youre ready to see what your bot can do, You can do that too right here, or export your bot and execute it on your own device</li>
     </ul>
     <h2>Planned User Features :</h2>
     <ul>
