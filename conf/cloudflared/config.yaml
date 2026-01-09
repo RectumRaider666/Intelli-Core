@@ -1,0 +1,7 @@
+tunnel: ubuntu
+credentials-file: /venv/conf/cloudflared/084aa438-1e1d-47a7-9749-602afa7b3a55.json
+
+ingress:
+  - hostname: intellicap.org
+    service: http://0.0.0.0:8080
+  - service: http_status:404

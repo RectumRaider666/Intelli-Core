@@ -1,0 +1,127 @@
+/* Body Styling */
+body {
+    margin: 0;
+    padding: 0;
+    background-image: url('../static/img/bg-landing.jpg');
+    background-size: cover;
+}
+
+/* Navigation Bar Styling */
+nav {
+    margin: 0;
+    margin-bottom: 10px;
+    padding: 0;
+    position: relative;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    height: 10vh;
+    width: 100vw;
+}
+
+ul {
+    display: flex;
+    gap: 5%;
+    margin: 5%;
+    padding: 1px;
+    width: 95%;
+    max-width: 100%;
+    box-sizing: border-box;
+    justify-content: space-between;
+}
+
+ul li {
+    position: relative;
+    list-style: none;
+    width: 50px;
+    height: 50px;
+    background: white;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.75s;
+    border-radius: 60px;
+}
+
+ul li:before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 60px;
+    background: linear-gradient(45deg, var(--i), var(--j));
+    opacity: 0;
+    transition: 1s;
+}
+
+ul li:after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    height: 100%;
+    border-radius: 60px;
+    background: linear-gradient(45deg, var(--i), var(--j));
+    transition: 0.5s;
+    filter: blur(15px);
+    z-index: -1;
+    opacity: 0;
+}
+
+ul li:hover {
+    width: 180px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0);
+
+}
+
+ul li:hover:before {
+    opacity: 1;
+}
+
+ul li:hover:after {
+    opacity: 0.5;
+}
+
+ul li ion-icon {
+    color: #777;
+    font-size: 1.75em;
+    transition: 0.5s;
+    transition-delay: 0.25s;
+}
+
+ul li:hover ion-icon {
+    transform: scale(0);
+    color: #fff;
+    transition-delay: 0;
+}
+
+ul li span {
+    position: absolute;
+}
+
+ul li .title {
+    color: #fff;
+    font-size: 1.1em;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transform: scale(0);
+    transition: 0.5s;
+    transition-delay: 0s;
+}
+
+ul li:hover .title {
+    transform: scale(1);
+    transition-delay: 0.25s;
+}
+
+/* Body Content */
+.container {
+    padding: 20px;
+    margin: 10px;
+    background-color: rgba(87, 83, 83, 0.699);
+    border-radius: 10px;
+}

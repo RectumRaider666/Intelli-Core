@@ -1,0 +1,5 @@
+bind-addr: 127.0.0.1:8081
+auth: none
+password: tfukgobx
+cert: false
+user-data-dir: /venv/container/data/code-server

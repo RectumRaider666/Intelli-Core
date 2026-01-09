@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intellicap - System Logs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Courier New', monospace;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .header {
+            background: #2d2d2d;
+            padding: 15px 20px;
+            border-bottom: 2px solid #007acc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            font-size: 20px;
+            color: #007acc;
+        }
+        .refresh-btn {
+            background: #007acc;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .refresh-btn:hover {
+            background: #005a9e;
+        }
+        .container {
+            display: flex;
+            height: calc(100vh - 60px);
+        }
+        .log-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #3e3e3e;
+        }
+        .log-panel:last-child {
+            border-right: none;
+        }
+        .log-header {
+            background: #2d2d2d;
+            padding: 10px 15px;
+            border-bottom: 1px solid #3e3e3e;
+            font-weight: bold;
+            color: #4ec9b0;
+        }
+        .log-content {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        .log-line {
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .log-line.error {
+            color: #f48771;
+        }
+        .log-line.warn {
+            color: #dcdcaa;
+        }
+        .log-line.info {
+            color: #4fc1ff;
+        }
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e1e1e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3e3e3e;
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔍 Intellicap System Logs</h1>
+        <button class="refresh-btn" onclick="refreshLogs()">🔄 Refresh</button>
+    </div>
+    <div class="container">
+        <div class="log-panel">
+            <div class="log-header">📝 Server Logs (last 100 lines)</div>
+            <div class="log-content" id="server-logs">Loading...</div>
+        </div>
+        <div class="log-panel">
+            <div class="log-header">☁️ Tunnel Logs (last 100 lines)</div>
+            <div class="log-content" id="tunnel-logs">Loading...</div>
+        </div>
+    </div>
+
+    <script>
+        async function fetchLogs() {
+            try {
+                // Fetch server logs
+                const serverResponse = await fetch('/static/logs/server.log');
+                const serverText = await serverResponse.text();
+                const serverLines = serverText.split('\n').slice(-100);
+                document.getElementById('server-logs').innerHTML = serverLines
+                    .map(line => `<div class="log-line ${getLogClass(line)}">${escapeHtml(line)}</div>`)
+                    .join('');
+
+                // Fetch tunnel logs
+                const tunnelResponse = await fetch('/static/logs/tunnel.log');
+                const tunnelText = await tunnelResponse.text();
+                const tunnelLines = tunnelText.split('\n').slice(-100);
+                document.getElementById('tunnel-logs').innerHTML = tunnelLines
+                    .map(line => `<div class="log-line ${getLogClass(line)}">${escapeHtml(line)}</div>`)
+                    .join('');
+
+                // Auto-scroll to bottom
+                document.querySelectorAll('.log-content').forEach(el => {
+                    el.scrollTop = el.scrollHeight;
+                });
+            } catch (error) {
+                console.error('Failed to fetch logs:', error);
+            }
+        }
+
+        function getLogClass(line) {
+            if (line.includes('ERROR') || line.includes('error') || line.includes('ERR')) return 'error';
+            if (line.includes('WARN') || line.includes('warn') || line.includes('WRN')) return 'warn';
+            if (line.includes('INFO') || line.includes('info') || line.includes('INF')) return 'info';
+            return '';
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function refreshLogs() {
+            fetchLogs();
+        }
+
+        // Initial load
+        fetchLogs();
+
+        // Auto-refresh every 3 seconds
+        setInterval(fetchLogs, 3000);
+    </script>
+</body>
+</html>
