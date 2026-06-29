@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-VERSION='0.3.5'
+VERSION='0.3.6'
 
 from urllib.parse import urlparse
 from pathlib import Path
@@ -11,7 +11,7 @@ import yt_dlp
 import sys
 import os
 
-# Helpers
+# Helper functions
 def is_termux():
     prefix = os.environ.get("PREFIX", "")
     return (
@@ -49,8 +49,8 @@ def yeet():
         return None
     return fx
     
-## Main
-ROOT = Path(os.getcwd())
+## MainProcess
+ROOT = Path(sys.argv[0]).resolve().parent
 DEST = get_dest()
 DEST.mkdir(parents=True, exist_ok=True)
 OPTS = {
