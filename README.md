@@ -1,7 +1,7 @@
 # Intellicore
 
 My collection of random scripts and programs I've wrote.
-Some shiny new CrapWare awaits you XD
+Some shiny new Crap-Ware awaits you XD
 
 ## Abot
 
@@ -52,7 +52,9 @@ A self built brute-force 'jail-break' for the Arcade 1UP Infinity Gaming Tables 
 
 ## FstClkr
 
-How fast can a single optimized thread click the mouse over a target X,Y? This project aims to find out by utelizing Rust and its low-level control, in very a tight loop. Plan to figure out a way to count the clicks via serperate running processes.
+This project had only one goal in mind... How fast can a single process click the mouse over a target X,Y? We try to find out by utelizing Rust and its low-level control, in very a tight loop. I plan to somehow figure out a way to count the clicks via serperate running processes instead inside the main loop, but even with this extra function we are hitting..
+
+**SPOILER** roughly 25,000/sec
 
 ## Maze
 
