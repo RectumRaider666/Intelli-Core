@@ -20,10 +20,10 @@ Intended for use in Termux environments with adb wireless debugging on a loop to
 ## Daemon
 
 I made this to practice making daemons, learning the signal lib, and system arch
-The daemon in this project handels pausing, resuming, restarting, and killing a counter loop in the background. Once a process is running you can use seperate terminal to control already running processes.
+The daemon in this project handels pausing, resuming, restarting, and killing a counter loop in the background. Once a process is running you can use a seperate terminal to control already running processes.
 
-This has no real use.
+This has no real use. Just cool to see.
 
 ## Maze
 
-My blind attempt at single-run maze generation with Python.
+My blind attempt at single-run maze generation with Python. Now accepts dynamic map sizes.
