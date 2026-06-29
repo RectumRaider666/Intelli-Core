@@ -6,16 +6,24 @@ from playwright.async_api import async_playwright
 from datetime import datetime, timedelta
 from pathlib import Path
 import urllib.parse
+import contextlib
 import aiosqlite
+import functools
 import requests
 import sqlite3
+import logging
 import base64
 import json
 import pytz
+import sys
+import io
 
 root = Path(__file__).parent.parent
+logf = root / "data" / "sys.log"
 with open(str(root / "docs" / "api_key.txt"), "r") as f:
     key = f.read().strip()
+
+
 
 ## <!-- [Database] ----->
 def init_db():

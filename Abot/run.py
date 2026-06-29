@@ -11,6 +11,40 @@ import pytz
 import time
 import sys
 
+## <!-- [Logging] ----->
+logging.basicConfig(
+    filename = str(""),
+    level = logging.INFO,
+    format = "%(asctime)s | %(levelname)s | %(message)s"
+)
+
+class Tee:
+    def __init__(self, logfile):
+        self.terminal = sys.stdout
+        self.log = open(logfile, "a", buffering=1)
+
+    def write(self, text):
+        self.terminal.write(text)
+        self.log.write(text)
+
+    def flush(self):
+        self.terminal.flush()
+        self.log.flush()
+
+def logg(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        old_stdout = sys.stdout
+        sys.stdout = Tee("filename")
+        try:
+            result = func(*args, **kwargs)
+            print(f"[return] {result!r}")
+            return result
+        finally:
+            sys.stdout.log.close()
+            sys.stdout = old_stdout
+    return wrapper
+
 ## <!-- [2] Variables ----->
 # /2.1/ Directory
 root = Path(__file__).parent
