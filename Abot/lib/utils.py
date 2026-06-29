@@ -19,7 +19,7 @@ import sys
 import io
 
 root = Path(__file__).parent.parent
-settf = ROOT / "doc" / "settings.ini"
+settf = ROOT / "doc" / "settings.json"
 logf = root / "data" / "sys.log"
 with open(str(root / "doc" / "api.key"), "r") as f:
     key = f.read().strip()
@@ -78,11 +78,47 @@ async def get_db():
     await conn.execute("PRAGMA temp_store=MEMORY;")
     return conn
 
-## <!-- [Prints] ----->
+## <!-- [Prints & Logs] ----->
 def ts() -> str:
     """Return a standardized time format of the current time"""
     now = datetime.now(pytz.timezone('America/New_York'))
     return now.strftime('%Y-%m-%d %H:%M:%S')
+
+## <!-- [Logging] ----->
+logging.basicConfig(
+    filename = settf,
+    level = logging.INFO,
+    format = "%(asctime)s | %(levelname)s | %(message)s"
+)
+
+class Tee:
+    """Serves as the logging buffer & flush"""
+    def __init__(self, logfile):
+        self.terminal = sys.stdout
+        self.log = open(logfile, "a", buffering=1)
+
+    def write(self, text):
+        self.terminal.write(text)
+        self.log.write(text)
+
+    def flush(self):
+        self.terminal.flush()
+        self.log.flush()
+
+def logg(func):
+    """Forces a wrapped func to log all print & stdout messages"""
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        old_stdout = sys.stdout
+        sys.stdout = Tee("filename")
+        try:
+            result = func(*args, **kwargs)
+            print(f"[return] {result!r}")
+            return result
+        finally:
+            sys.stdout.log.close()
+            sys.stdout = old_stdout
+    return wrapper
 
 ## <!-- [Kalshi Auth] ----->
 class Signer:
