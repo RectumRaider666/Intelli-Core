@@ -19,13 +19,44 @@ import sys
 import io
 
 root = Path(__file__).parent.parent
+settf = ROOT / "doc" / "settings.ini"
 logf = root / "data" / "sys.log"
-with open(str(root / "docs" / "api_key.txt"), "r") as f:
+with open(str(root / "doc" / "api.key"), "r") as f:
     key = f.read().strip()
 
-
-
 ## <!-- [Database] ----->
+class Sett():
+    """Applies settings.ini configs to an object"""
+    def __init__(self):
+        self.LOG_FILE = None
+
+        self.IDX_BTC = None
+        self.IDX_AVG = None
+        self.IDX_RSI = None
+        self.IDX_ATR = None
+        self.IDX_HTR = None
+        self.IDX_RBC = None
+        self.IDX_WINDOW = None
+        self.WINDOW_SIZE = None
+
+        self.AVG_LEN = None
+        self.RSI_LEN = None
+        self.ATR_LEN = None
+
+        self.min_ri_re = None
+        self.max_re_re = None
+        self.min_pos_size = None
+        self.max_pos_size = None
+        self.max_acc_perc = None
+        self.max_tte = None
+        self.min_tte = None
+
+        self.fetch_settings()
+
+    def fetch_settings(self):
+        with open(settf, "r") as f:
+            ## PARSE & APPEND ATTRIBUTES
+
 def init_db():
     """Apply the schema to the database"""
     schema_path = root / "data" / "schema.sql"
