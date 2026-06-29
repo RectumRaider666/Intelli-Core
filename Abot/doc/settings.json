@@ -1,0 +1,66 @@
+{
+// System Control Settings
+    // Prints to the console
+    "sys.mode.debug": true,
+    // Will not use real trade execution
+    "sys.mode.paper": true,
+    // will actively trade
+    "sys.mode.live": false,
+
+// General Execution Settings
+    // log level
+    "gen.log.level": "info",
+    // log filename
+    "gen.log.file": "data/system.logs",
+    // log max entries x1000 
+    "gen.log.max_len": 100,
+    // whether or not to delete old logs
+    "gen.log.cycle": false,
+
+// Configuration of the CFX data scrapper
+    // How long a single cfx process will run before being replaced
+    "cfx.delay_min": 60,
+    // How often it attempts to fetch updates
+    "cfx.fetch_ms": 1000,
+    // How long an old cfx process will stay alive after the start of a new one
+    "cfx.overlap_sec": 10,
+
+// Assigning Index-Values to the Shared Memory Object (NOT for your average person, setting these wrong can crash the entire program)
+    // Shared Memory Objects declared block values
+    "shm.idx_btc": 0,
+    "shm.idx_avg": 1,
+    "shm.idx_rsi": 2,
+    "shm.idx_atr": 3,
+    "shm.idx_htr": 4,
+    "shm.idx_rbc": 5,
+    "shm.idx_window": 6,
+
+// Managing the rolling ring buffer window of price data
+    "window.size": 3600,
+
+// Configurations of how indicators are calculated
+    // How many previous price points are used to calculate the current avg_price (kalshi uses 60)
+    "tech.avg_len": 60,
+    // How many candles are considered in RSI calcs
+    "tech.rsi_len": 14,
+    // How many candels are considered in ATR calcs
+    "tech.atr_len": 14,
+
+// Trading Constraints and Risk Managment
+    // The minial amount of reward needed for entry against 1 risk point
+    "trade.r_r.min": 2,
+    // The max amound of reward the bot will actively search for
+    "trade.r_r.max": 5,
+    // The minimum difference in cents needed between the stoploss and the take profit
+    "trade.stop.min_size": 3,
+    // The max differencence in cents reached before dymanically raising stoplosses closer to the take profit
+    "trade.stop.max_size": 4,
+    // The max amount of time in sec left on a market before considering a trade (There needs to be less time left than this value)
+    "trade.entry.max_tte":  900,
+    // The minimal amount of time in sec left before market close to still consider a trade (There needs to be more time left than this value)
+    "trade.entry.min_tte": 30,
+    // The max % of account value that any one trade can actively invest
+    "trade.pos.max_perc": 3,
+    // The max % of account value that all trades can have actively invested at once
+    "trade.acc.max_perc": 10
+}

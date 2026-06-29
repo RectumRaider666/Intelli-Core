@@ -24,7 +24,7 @@ logf = root / "data" / "sys.log"
 with open(str(root / "doc" / "api.key"), "r") as f:
     key = f.read().strip()
 
-## <!-- [Database] ----->
+## <!-- [Settings] ----->
 class Sett():
     """Applies settings.ini configs to an object"""
     def __init__(self):
@@ -57,6 +57,7 @@ class Sett():
         with open(settf, "r") as f:
             ## PARSE & APPEND ATTRIBUTES
 
+## <!-- [Database] ----->
 def init_db():
     """Apply the schema to the database"""
     schema_path = root / "data" / "schema.sql"
@@ -154,7 +155,7 @@ def balance() -> str:
         print("Kalshi balance request failed:", e)
 
 def get_markets(strike:str):
-    """Return target strike prices"""
+    """Return a target strikes market prices"""
     base = "https://external-api.kalshi.com/trade-api/v2/markets/KXBTCD-"
     now = datetime.now(pytz.timezone('America/New_York'))
     nxthr = now.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1)
