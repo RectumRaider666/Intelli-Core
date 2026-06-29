@@ -16,7 +16,13 @@ My attempt at a Kalshi Trading bot that uses my self-developed strategy to make 
 My attempt at circumventing Pyautogui's NO-DISPLAY error that happens on android devices, by forcing opencv to check against a screenshot rather than the display itself.
 
 Intended for use in Termux environments with adb wireless debugging on a loop to itself using '$adb tcpip 5555 && adb connect HOST:5555' for device automations using pre-saved images.
-## btcswiper
+
+## Autux
+
+## BtcSwiper
+
+## CodeServer
+
 ## Daemon
 
 I made this to practice making daemons, learning the signal lib, and system arch
@@ -24,6 +30,15 @@ The daemon in this project handels pausing, resuming, restarting, and killing a 
 
 This has no real use. Just cool to see.
 
+## InTable
+
 ## Maze
 
 My blind attempt at single-run maze generation with Python. Now accepts dynamic map sizes.
+
+## Orna
+
+## Scripts
+
+## Tornbot
+
