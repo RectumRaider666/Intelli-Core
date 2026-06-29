@@ -1,0 +1,39 @@
+from pynput import keyboard
+import sys
+import signal
+
+controller = keyboard.Controller()
+holding = True
+
+def rel():
+    global holding
+    if holding:
+        controller.release('e')
+        holding = False
+        print("Released")
+
+def toggle():
+    global holding
+    if holding:
+        rel()
+    else:
+        controller.press('e')
+        holding = True
+        print("Holding")
+
+def press(key):
+    try:
+        if key.char == '5':
+            toggle()
+    except AttributeError:
+        pass
+
+def signal_handler(sig, frame):
+    rel()
+    sys.exit(0)
+
+print("Press 'p' to toggle holding", "\nPress Ctrl+C to exit")
+signal.signal(signal.SIGINT, signal_handler)
+
+with keyboard.Listener(on_press=press) as listener:
+    listener.join()
