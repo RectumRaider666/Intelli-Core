@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-Version = ["Just to prove I could ;)", "Now... DELETE THOSE EMAILS XD"]
-
 import sys
 import subprocess
 from datetime import datetime
