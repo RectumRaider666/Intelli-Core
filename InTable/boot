@@ -1,0 +1,173 @@
+#!/data/data/com.termux/files/usr/bin/bash
+
+# Variables
+INJECT_LINE='bash "$HOME/.termux/boot/boot" &'
+BASHRC="$PREFIX/etc/bash.bashrc"
+VERSION="Simple.1.37"
+LOG="$HOME/.termux/logs/boot.log"
+INST="$HOME/storage/shared/Download"
+REM_PAKS=(
+    'com.theorytank.a1up_keyboard'
+    'com.theorytank.a1up_screensaver'
+)
+REM_COMS=(
+    'Infinity Keyboard'
+    '1UP Screen Saver'
+)
+REQ_PAKS=(
+    'com.termux'
+    'com.termux.api'
+    'com.termux.boot'
+    'com.termux.float'
+    'com.aurora.store'
+    'org.fdroid.fdroid'
+    'com.atomicadd.tinylauncher'
+    'nextapp.fx'
+)
+REQ_PAKS_URL=(
+    'https://github.com/termux/termux-app/releases/download/v0.118.3/termux-app_v0.118.3+github-debug_armeabi-v7a.apk' # Termux-App
+    'https://github.com/termux/termux-api/releases/download/v0.53.0/termux-api-app_v0.53.0+github.debug.apk' # Termux-API
+    'https://f-droid.org/repo/com.termux.boot_7.apk' # Termux-Boot
+    'https://f-droid.org/repo/com.termux.float_10.apk' # Termux-Float
+    'https://auroraoss.com/downloads/AuroraStore/Release/AuroraStore-4.7.5.apk' # Aurora Store
+    'https://f-droid.org/F-Droid.apk' # F-droid
+    'https://f-droid.org/repo/com.atomicadd.tinylauncher_16.apk' # TinyLauncher
+    'https://www.apkmirror.com/apk/nextapp-inc/fx-file-explorer/fx-file-explorer-9-2-0-0-release/fx-file-explorer-9-2-0-0-android-apk-download/' # FX file manager''
+)
+
+# Helpers
+ts() {
+    date "+%Y-%m-%d %H:%M:%S"
+}
+
+SYSSETT() {
+    am start -n com.android.settings/.Settings
+}
+
+# Main Pipe
+echo "Boot Controller Started"
+sleep 2
+echo '   '
+echo "Detecing OEM Packages ..."
+sleep 2
+echo '   '
+found=()
+for pkg in "${REM_PAKS[@]}"; do
+    if pm list packages | grep -q "$pkg"; then
+        case $pkg in
+            com.theorytank.a1up_keyboard)
+                appt="Infinity Keyboard" ;;
+            com.theorytank.a1up_launcher)
+                appt="Dashboard" ;;
+            com.theorytank.a1up_screensaver)
+                appt="1UP Screen Saver" ;;
+            *)
+                appt="$pkg" ;;
+        esac
+        found+=("$appt")
+    fi
+done
+if [ ${#found[@]} -eq 0 ]; then
+    echo "[SUCCESS](1/4): No OEM Packages Found"
+    sleep 3
+else
+    echo '   '
+    echo "[WARNING]: OEM Packages Found!! Opening System Settings for Deletion..."
+    sleep 5
+    SYSSETT
+    echo '   '
+    echo "[INFO]: Open Apps & Notifications, then click 'See All Apps'"
+    echo "Find these Apps and Uninstall them: "
+    for itm in "${found[@]}"; do
+        echo "$itm"
+    done
+    sleep 3
+    echo "   "
+    echo "When Done, return to terminal and enter 'done'"
+    sleep 5
+    while true; do
+        read -p $'Type a command and press Enter:\n  done      - when finished\n  settings  - to open the menu again\n  apps      - to see the list of apps to delete\n  home  - to go to home screen\n> ' input
+        case "$input" in
+            done)
+                echo '   '
+                echo "Verifying..."
+                sleep 3
+                missing=0
+                for pkg in "${REM_PAKS[@]}"; do
+                    if pm list packages | grep -q "$pkg"; then
+                        echo '   '
+                        echo "[WARN]: Package $pkg still present!"
+                        sleep 3
+                        missing=1
+                    fi
+                done
+                if [ "$missing" -eq 0 ]; then
+                    echo '   '
+                    echo "[SUCCESS]: All packages removed."
+                    sleep 3
+                    break
+                else
+                    echo "   "
+                    echo "Please remove all listed packages before finishing."
+                    sleep 2
+                fi
+                ;;
+            settings|set)
+                SYSSETT
+                ;;
+            apps)
+                echo "Packages to delete:"
+                for itm in "${found[@]}"; do
+                    echo "$itm"
+                done
+                ;;
+            home)
+                if pm list packages | grep -q "com.atomicadd.tinylauncher"; then
+                    am start -n com.atomicadd.tinylauncher/.MainActivity
+                else
+                    echo "[ERROR]: TinyLauncher is not installed."
+                fi
+                ;;
+            *)
+                ;;
+        esac
+    done
+fi
+echo "[INFO]: Checking for required packages..."
+sleep 3
+echo '  '
+missing_indexes=()
+for i in "${!REQ_PAKS[@]}"; do
+    pkg="${REQ_PAKS[$i]}"
+    if ! pm list packages | grep -q "$pkg"; then
+        echo "[MISSING]: $pkg"
+        missing_indexes+=("$i")
+    fi
+done
+echo '   '
+if [ ${#missing_indexes[@]} -gt 0 ]; then
+    echo "[INFO]: Downloading missing APKs to $INST..."
+    echo '   '
+    sleep 3
+    mkdir -p "$INST"
+    for idx in "${missing_indexes[@]}"; do
+        url="${REQ_PAKS_URL[$idx]}"
+        fname=$(basename "$url")
+        echo "[DOWNLOAD]: $url -> $INST/$fname"
+        curl -L "$url" -o "$INST/$fname" || wget -O "$INST/$fname" "$url"
+        echo "[INSTALL]: Attempting to install $fname..."
+        pm install "$INST/$fname" && echo "[SUCCESS]: Installed $fname" && echo '   ' || echo "[ERROR]: Failed to install $fname. Please install manually." && echo '   '
+    done
+    echo "[INFO]: All missing APKs processed."
+    echo '   '
+    sleep 3
+fi
+echo "[SUCCESS]: Boot Controller Finished!"
+sleep 2
+echo '   '
+echo "Disabling Shell-Boot Trigger..."
+sed -i "\\|$INJECT_LINE|d" "$BASHRC"
+sleep 1
+echo "Exiting to Home Screen..."
+sleep 3
+am start -n com.atomicadd.tinylauncher/.MainActivity

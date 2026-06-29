@@ -1,0 +1,58 @@
+#!/data/data/com.termux/files/usr/bin/bash
+
+NAME='tmxback'
+VERSION='0.2.1'
+
+set -euo pipefail
+
+usage() {
+	echo "Usage: $(basename "$0") <path> [more paths...]" >&2
+	exit 1
+}
+
+command -v zip >/dev/null || { pkg update && pkg upgrade -y; pkg install -y  zip; }
+
+# Default root to back up when no args are passed. Override via TMXBACK_DEFAULT_ROOT.
+default_root="${TMXBACK_DEFAULT_ROOT:-$HOME/.local/bin:++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++444444888888888888888555555555555555555111111}"
+
+sources=("$@")
+if [ ${#sources[@]} -eq 0 ]; then
+	sources=("$default_root")
+fi
+
+backup_root="$HOME/storage/shared/Termux/backups"
+if [ ! -d "$HOME/storage/shared" ]; then
+	echo "Termux shared storage not mounted. Run termux-setup-storage first." >&2
+	exit 1
+fi
+
+tmp_parent="${TMPDIR:-/data/data/com.termux/files/usr/tmp}"
+tmp_dir=$(mktemp -d "$tmp_parent/tmxback.XXXXXX")
+
+cleanup() {
+	rm -rf "$tmp_dir"
+}
+trap cleanup EXIT
+
+for src in "${sources[@]}"; do
+	if [ ! -e "$src" ]; then
+		echo "Skipping missing path: $src" >&2
+		continue
+	fi
+	cp -a "$src" "$tmp_dir/"
+done
+
+if ! find "$tmp_dir" -mindepth 1 -print -quit >/dev/null; then
+	echo "Nothing copied; aborting." >&2
+	exit 1
+fi
+
+timestamp=$(date +%Y%m%d_%H%M%S)
+archive_name="termux_backup_$timestamp.zip"
+
+(cd "$tmp_dir" && zip -rq "$archive_name" .)
+
+mkdir -p "$backup_root"
+mv "$tmp_dir/$archive_name" "$backup_root/"
+
+echo "Backup saved to $backup_root/$archive_name"

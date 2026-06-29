@@ -1,0 +1,78 @@
+#!/data/data/com.termux/files/usr/bin/bash
+
+VERSION="0.1.6"
+PAKS=( "com.xfinity.keyboard" )
+AOSP="com.android.inputmethod.latin/.LatinIME"
+LOG="$HOME/.termux/boot/bootlog.log"
+
+# --- Helper functions --------------------------------------------------------
+ts() {
+    date "+%Y-%m-%d %H:%M:%S"
+}
+error() {
+    local msg="$1"
+    termux-toast "[ERROR]: $msg"
+    echo "$(ts) [ERROR]: $msg"
+}
+warn() {
+    local msg="$1"
+    termux-toast "[WARN]: $msg"
+    echo "$(ts) [WARN]: $msg"
+     sleep 2
+}
+info() {
+    local msg="$1"
+    termux-toast "[INFO]: $msg"
+    echo "$(ts) [INFO]: $msg"
+    sleep 2
+}
+run() {
+    local desc="$1"
+    shift
+    local cmd="$*"
+    local out
+     if ! out=$(bash -c "$cmd" 2>&1); then
+        error "$desc failed: $out"
+        return 1
+    else info "$desc succeeded"
+        echo "$(ts) [RUN ] $cmd"
+        echo "$(ts) [OUT ] $out"
+        return 0
+    fi
+}
+
+# --- Main pipeline -----------------------------------------------------------
+{
+    run "Fixit v$VERSION — Boot Started $(date)" "termux-wake-lock"
+ 
+# --- Disable unwanted packages ------------------------------------------
+    for pkg in "${PAKS[@]}"; do
+        if pm list packages | grep -q "$pkg"; then
+            warn "Found unwanted package: $pkg — disabling"
+            run "Disabling unwanted package $pkg" "pm disable-user --user 0 $pkg"
+        else info "Package not installed: $pkg"
+        fi
+    done
+
+    # --- Ensure AOSP keyboard is default ------------------------------------
+    info "Setting AOSP keyboard as default"
+    run "Setting AOSP keyboard as default" "settings put secure default_input_method $AOSP"
+
+    # --- Ensure USB & Wireless Debugging ------------------------------------
+    run "Enabling USB debugging" "settings put secure adb_enabled 1"
+    run "Enabling wireless debugging" "settings put secure adb_wifi_enabled 1"
+
+    # --- Ensure Install from Unknown Sources ---------------------------------
+    run "Allowing installation from unknown sources" "settings put secure install_non_market_apps 1"
+
+    # --- Ensure Auto System Update is disabled -------------------------------
+    run "Disabling auto system updates" "settings put secure auto_update_system 0"
+    run "Disabling OTA automatic updates" "settings put secure ota_disable_automatic_update 1"
+
+    # --- Ensure TinyLauncher is the default Home/Launcher --------------------
+    run "Enabling TinyLauncher" "pm enable com.atomicadd.tinylauncher"
+    run "Setting TinyLauncher as default launcher" "settings put secure preferred_launcher com.atomicadd.tinylauncher/.MainActivity"
+
+    info "Fixit pipeline complete $(date)"
+
+} >> "$LOG" 2>&1

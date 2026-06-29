@@ -1,0 +1,17 @@
+# Host
+alias next="adb push /media/angry/Storage/Projects/Table/. /sdcard/Documents/; echo 'boot.sh sent to storage/docs'; "
+alias rest="{ adb pull /sdcard/Documents/boot.log .; nano boot.log; }"
+
+
+# BASHRC
+sdoc="$HOME/storage/shared/Documents"
+tboot="$HOME/.termux/boot"
+bashrc="$PREFIX/etc/bash.bashrc"
+log="$HOME/.termux/logs/boot.log"
+
+alias cpdoc="{ cp -r $sdoc/* $tboot/; cd $tboot && ls -a; echo 'storage/docs copied to boot'; }"
+alias rmdoc="{ rm -rf $sdoc; mkdir -p $sdoc; cd $sdoc && ls -a; echo 'removed files from storage/docs'; }"
+alias rmboot="{ rm -rf $tboot; mkdir -p $tboot; cd $tboot && ls -a; echo 'removed files from boot'; }"
+
+alias settings="{ nano $bashrc; source $bashrc; echo 'settings updated'; }"
+alias test="{ cpdoc; bash boot.sh; nano log; }"
