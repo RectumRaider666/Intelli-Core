@@ -1,0 +1,84 @@
+#!/bin/bash
+
+local TARGET="$1"
+local TARGET_DIR="${TARGET%/*}"
+local REMOTE_SCREEN="${TARGET_DIR}/screen.png"
+shift
+while [[ $# -gt 0]]; do
+    case "$1" in
+        --tap)
+            local ACT="Tap"
+            shift
+            ;;
+        --hold)
+            local ACT="Hold"
+            shift
+            ;;
+        --thresh)
+            local THRESHOLD="$1"
+            shift
+            ;;
+    esac
+done
+local THRESHOLD="${THRESHOLD:-0.85}"
+local TMP_DIR="$(mktemp -d)"
+local LOC_PIC="${TMP_DIR}/target.png"
+local LOC_SCREEN="${TMP_DIR}/screen.png"
+local MATCH_OUT
+local STATUS
+
+# Callable Helpers
+tap () {
+    local x="$1"
+    local y="$2"
+    adb shell input tap "$x" "$y"
+}
+
+hold () {
+    local x="$1"
+    local y="$2"
+    local d="${3:-550}"
+    adb shell input swipe "$x" "$y" "$x" "$y" "$d"
+}
+
+# Produce & Place Screenshot #
+adb shell screencap -p "$REMOTE_SCREEN" || {
+    echo "Could not capture screen" >&2
+    rm -rf "$TMP_DIR"
+    return 1
+}
+adb pull "$TARGET" "$LOCAL_PIC" >/dev/null || {
+    echo "Could not pull target image: $TARGET" >&2
+    rm -rf "$TMP_DIR"
+    return 1
+}
+adb pull "$REMOTE_SCREEN" "$LOCAL_SCREEN" >/dev/null || {
+    echo "Could not pull screenshot: $REMOTE_SCREEN" >&2
+    rm -rf "$TMP_DIR"
+    return 1
+}
+
+# Send Images & Args to matcher.py #
+MATCH_OUT="$(python3 "matcher.py" "$LOCAL_SCREEN" "$LOCAL_PIC" "$THRESHOLD")"
+STATUS=$?
+
+# Handle matcher.py output #
+rm -rf "$TMP_DIR"
+if [ $STATUS -ne 0 ]; then
+    echo "$MATCH_OUT" >&2
+    return $STATUS
+fi
+read -r FIND_STATE FIND_X FIND_Y FIND_SCORE <<<"$MATCH_OUT"
+if [ "$FIND_STATE" = "FOUND" ]; then
+    echo "FOUND at x=$FIND_X y=$FIND_Y score=$FIND_SCORE"
+    if [[ -n "$ACT" ]]; then
+        if [[ "$ACT" == "Hold" ]]; then
+            hold "$FIND_X" "$FIND_Y"
+        elif [[ "$ACT" == "Tap" ]]; then
+            tap "$FIND_X" "$FIND_Y"
+        fi
+    fi
+    return 0
+fi
+echo "NOT_FOUND best_x=$FIND_X best_y=$FIND_Y score=$FIND_SCORE"
+return 1

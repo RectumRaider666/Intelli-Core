@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS prices (
+    time PRIMARY KEY,
+    value FLOAT NOT NULL
+);
