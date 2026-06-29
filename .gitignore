@@ -1,8 +1,16 @@
 *__pycache__*
-*/maze/mazes*
+*.devcontainer/*
+*.vscode/*
+*/maze/mazes/*
 */pids.txt
+*.keys
 *.logs
+*.dev
+*.env
+*.key
+*.log
 *.png
 *.db
 img/*
+
 
