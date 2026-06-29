@@ -1,0 +1,693 @@
+{
+	"Torn" : {
+        "url" : "https://www.torn.com/",
+        "City": {
+            "Map" : "https://www.torn.com/city.php#map-cont",
+            "Links" : "https://www.torn.com/city.php#quick-links",
+            "LoanShark" : "https://www.torn.com/loan.php",
+            "Museum" : "https://www.torn.com/museum.php",
+            "Racing" : "https://www.torn.com/loader.php?sid=racing",
+            "Missions" : "https://www.torn.com/loader.php?sid=missions",
+            "Hospital" : "https://www.torn.com/hospitalview.php",
+            "Dump" : "https://www.torn.com/dump.php",
+            "Jail" : "https://www.torn.com/jailview.php",
+            "Bank" : "https://www.torn.com/bank.php",
+            "Church" : "https://www.torn.com/church.php",
+            "Casino" : {
+                "Base" : "https://www.torn.com/casino.php",
+                "url" : "https://www.torn.com/page.php?sid={game}",
+                "game" : ["slots", "roulette", "higlow", "keno", "craps", "bookie", "lottery", "blackjack", "holdem", "russianRoulette#/", "spinTheWheel"]
+            },
+            "education" : {
+                "Base" : "https://www.torn.com/page.php?sid=education#/step=main",
+                "url" : "https://www.torn.com/page.php?sid=education&category={categ}&course={crs}#/step=main",
+                "categ" : [{"Biology" : 4}, {"Buisness" : 1}, {"Combat Training" : 9}, {"Computer Science" : 6}, {"General Studies" : 12}, {"Health & Fitness" : 11}, {"History" : 2}, {"Law" : 10}, {"Mathematics" : 3}, {"Psychology" : 7}, {"Self Defense" : 8}, {"Sports Science" : 5}],
+                "crs" : [{"Business" : [1, 13]}, {"History" : [14, 21]}, {"Mathematics" : [22, 33]}, {"Biology" : [34, 42]}, {"Sports Science" : [43, 51]}, {"Computer Science" : [52, 62]},  {"Psychology" : [63, 69]},  {"Self Defense" : [70, 77]},  {"Combat Training" : [78, 87]},  {"Law" : [88, 102]},  {"Health & Fitness" : [103, 111]}, {"General Studies" : [112, 121]}]
+            }
+        },
+        "Crimes" : {
+            "Url" : "https://www.torn.com/loader.php?sid=crimes#/{crime}",
+            "crimes" : ["searchforcash", "bootlegging", "graffiti", "shoplifting", "pickpocketing", "cardsmkimming", "burglary", "hustling", "disposal", "cracking", "forgery", "scamming"]
+        },
+        "Faction": {
+            "base" : "https://www.torn.com/factions.php?step=your&type={news}#/",
+            "url" : "https://www.torn.com/factions.php?step=your&type={news}#/tab={tabs}",
+            "news" : [{"1" : "Main News"}, {"2" : "Attacking"}, {"3" : "Funds"}, {"4" : "Armory"}, {"6" : "Chain Report"}, {"7" : "Crimes"}, {"8" : "Membership"}, {"9" : "Faction Items"}],
+            "tabs" : ["info", "territory", "rank", "crimes", "upgrades", "armoury", "controls&options={ops}"],
+            "ops":["newsletter", "application", "members", "positions"]
+        },
+        "Item-Market": {
+            "Bazaars" : "https://www.torn.com/page.php?sid=bazaar",
+            "url" : "https://www.torn.com/page.php?sid=ItemMarket#/market/view=category&categoryName={categs}",
+            "categs" : ["Most%20Popular", "Temporary", "Medical", "Drug", "Energy%20Drink", "Alcohol", "Candy", "Booster", "Enhancer", "Special", "Tool", "Material", "Supply%20Pack", "Clothing", "Jewelry", "Flower", "Plushie", "Artifact", "Collectible", "Other", "Melee&sortField={filters}&sortOrder={order}", "Primary&sortField={filters}&sortOrder={order}", "Car&carSort={sort}"],
+            "filters": [{"Weapons" : ["price", "damage", "accuracy", "quality"]}, {"Armor": ["price", "armor", "quality"]}],
+            "order" : ["ASC", "DESC"],
+            "sort" : ["topspeed", "acceleration", "braking", "handling", "dirt", "tarmac", "safety" ]
+        },
+        "Job": {
+            "url" : "https://www.torn.com/companies.php?step=your&type={types}#/option={ops}",
+            "types" : [{"Main" : 1}, {"Funds" : 2}, {"Training" : 3}, {"Employees" : 4}],
+            "ops" : ["income-chart", "pricing", "upgrades", "employees", "stock", "edit-profile", "company-positions", "advertising", "change-director", "applications", "funds", "sell-company"]
+        },
+        "Others" : {
+            "Profile" : "https://www.torn.com/profiles.php?XID={ID}",
+            "Message" : "https://www.torn.com/messages.php#/p=compose&XID={ID}",
+            "Bounty" : "https://www.torn.com/bounties.php?p=add&XID={ID}",
+            "Compare" : {
+                "url" : "https://www.torn.com/personalstats.php?ID={MYID},{ID}&stats={stat,stat,stat,etc}&from={time}",
+                "stat" : ["useractivity", "attackswon", "attackslost", "attacksdraw", "attacksassisted", "defendswon", "defendslost", "defendsstalemate", "elo", "yourunaway", "theyrunaway", "unarmoredwon", "killstreak", "bestkillstreak", "attackhits", "attackmisses", "attackdamage", "bestdamage", "onehitkills", "attackcriticalhits", "roundsfired", "specialammoused", "hollowammoused", "tracerammoused", "piercingammoused", "incendiaryammoused", "attacksstealthed", "retals", "moneymugged", "largestmug", "itemslooted", "highestbeaten", "respectforfaction", "raidhits", "territoryjoins", "territoryclears", "territorytime", "jobpointsused", "trainsrecived", "itemsbought", "auctionswon", "auctionsells", "itemsent", "trades", "cityitemsbought", "pointsbought", "pointssold", "bazaarcustomers", "bazaarsales", "bazaarprofit", "itemmarketcustomers", "itemmarketsales", "itemmarketrevenue", "itemmarketfees", "jailed", "peoplebusted", "failedbusts", "peoplebought", "peopleboughtspent", "hospital", "medicalitemsused", "bloodwithdrawn", "reviveskill", "revives", "revivesrecieved", "heahits", "machits", "rifhits", "smghits", "shohits", "pishits", "grehits", "piehits", "slahits", "axehits", "chahits", "booksread", "boostersused", "consumablesused", "candyused", "alcoholused", "energydrinksused", "statenhancersused", "traveltimes", "traveltime", "missionscompleted", "contractscompleted", "drugsused", "overdose", "rehabs", "rehabcost", "cantaken", "exttaken", "kettaken", "lsdtaken", "opitaken", "pcptaken", "shrtaken", "spetaken", "victaken", "xanax", "refils", "nerverefills", "tokenrefills", "awards", "meritsbought", "daysbeendonator", ""],
+                "time" : ["1%20month", "3%20months", "6%20months", "1%20year", "5%20years", "al"]
+            }
+        },
+        "Personal" : {
+            "Vault" : "https://www.torn.com/properties.php#/p=options&tab=vault",
+            "AirStrip" : "https://www.torn.com/page.php?sid=travel",
+            "Gym" : "https://www.torn.com/gym.php",
+            "Items" : "https://www.torn.com/item.php",
+            "Images" : "https://www.torn.com/page.php?sid=gallery&XID=2353731",
+            "Targets" : "https://www.torn.com/page.php?sid=list&type=targets",
+            "Report" : "https://www.torn.com/page.php?sid=report&userID={ID}#/add",
+            "Bazaar" : "https://www.torn.com/page.php?sid=report&userID={ID}#/add",
+            "Display" : "https://www.torn.com/displaycase.php#display/{ID}"
+        },
+        "Points" : {
+            "Building" : "https://www.torn.com/page.php?sid=points",
+            "Market" : "https://www.torn.com/pmarket.php"
+        },
+        "Shops" : {
+            "BigAlsGunShop" : "https://www.torn.com/bigalgunshop.php",
+            "Url" : "https://www.torn.com/shops.php?step={shop}",
+            "shops" : ["bitsnbobs", "cyberforce", "docks", "jewelry", "nikeh", "pawnshop", "pharmacy", "postoffice", "printstore", "recyclingcenter", "super", "candy", "clothes"]
+        },
+        "Stocks": {
+            "base" : "https://www.torn.com/page.php?sid=stocks",
+            "url" : "https://www.torn.com/page.php?sid=stocks&stockID{symbol}&tab={tabs}",
+            "symbols" : [2, 1, 15, 10, 30, 29, 16, 3, 28, 1, 24, 17, 3, 26, 13, 27, 4, 33, 7, 32, 9, 21, 6, 20, 19, 22, 11, 12, 5, 23, 14, 34, 25, 35, 9],
+            "tabs" : ["name", "price&period={chart}", "owned", "dividend" ],
+            "charts" : ["hour", "day", "week", "month", "year", "all"]
+        },
+        "Settings" : {
+            "url" : "https://www.torn.com/preferences.php#tab={tabs}",
+            "tabs" : ["settings", "security", "attack-preferences", "your-icons", "navigation-settings", "email-subscriptions", "api", "name", "email", "password", "sex-change", "profile-signature", "forum-signature", "personal-details", "your-images", "casino-self-exclusion"]
+        }
+    },
+    "Api" : {
+        "User" : {
+            "bars" : {
+                "url" : "https://api.torn.com/user/{ID}?selections=bars&key={key}",
+                "returns" : ["energy", "nerve", "happy", "life", "chain"]
+            },
+            "basic" : {
+                "url" : "https://api.torn.com/user/{ID}?selections=basic&key={key}",
+                "returns" : ["level", "gender", "ID", "name", "status"]
+            },
+            "cooldowns" : {
+                "url" : "https://api.torn.com/user/?selections=cooldowns&key={key}",
+                "returns" : ["drug", "booster", "medical"]
+            },
+            "money" : {
+                "url" : "https://api.torn.com/user/?selections=money&key={key}",
+                "returns" : ["points", "cayman", "vault", "company", "dailyNet", "onHand", "cityBank"]
+            },
+            "newevents" : {
+                "url" : "https://api.torn.com/user/?selections=newevents&key="
+            },
+            "profile" : {
+                "url" : "https://api.torn.com/user/{ID}?selections=profile&key={key}",
+                "returns" : ["INDEPTH", "PLAYER", "DATA"]
+            },
+            "refills" : {
+                "url" : "https://api.torn.com/user/?selections=refills&key={key}",
+                "returns" : ["dailyenergy", "dailynerve", "dailytoken", "dailyspecial"]
+            },
+            "weaponexp" : {
+                "url" : "https://api.torn.com/user/?selections=weaponexp&key={key}",
+                "returns" : ["ItemID", "ItemName", "exp%"]
+            }
+
+        },
+        "Faction": {},
+        "Market" : {
+            "pointsmarket" : {
+                "url" : "https://api.torn.com/market/?selections=pointsmarket&key={key}",
+                "returns" : ["cost", "quantity", "price"]
+            }
+        },
+        "Torn" : {},
+        "" : {}
+    },
+    "Extras" : {
+        "ArsonWareHouse" : "https://arsonwarehouse.com/",
+        "TornStats" : "https://tornstats.com/",
+        "Yata": "https://yata.yt/",
+        "Tornsy" : "https://tornsy.com/tcse",
+        "Report" : "https://torn.report/",
+        "Exchange" : "https://www.tornexchange.com/"
+    },
+	"URLS" : {
+		"Base_Api" : {
+			"v1" : "https://api.torn.com/",
+			"v2" : "https://api.torn.com/v2/"
+		},
+		"IMG" : {
+			"Large" : "https://www.torn.com/images/items/[ITEM_ID]/large.png",
+			"L_px" : [100, 50],
+			"Medium" : "https://www.torn.com/images/items/[ITEM_ID]/medium.png",
+			"M_px" : [60, 30],
+			"Small" : "https://www.torn.com/images/items/[ITEM_ID]/small.png",
+			"S_px" : [38, 19]
+		},
+		"v1" : {
+			"User" : {
+				"Base" : "https://api.torn.com/user/[USER_ID]?selections=[SELECTION]&key=[KEY]&comment=[COMMENT]",
+				"Selections" : [
+					"ammo",
+					"attacks",
+					"attacksfuil",
+					"bars",
+					"basic",
+					"battlestats",
+					"bazaar",
+					"cooldowns",
+					"crimes",
+					"discord",
+					"display",
+					"education",
+					"equipment",
+					"events",
+					"gym",
+					"hof",
+					"honors",
+					"icons",
+					"jobpoints",
+					"log",
+					"medals",
+					"merits",
+					"messages",
+					"missions",
+					"money",
+					"networth",
+					"newevents",
+					"newmessages",
+					"notifications",
+					"perks",
+					"personalstats",
+					"profile",
+					"properties",
+					"refills",
+					"reports",
+					"revives",
+					"revivesfull",
+					"skills",
+					"stocks",
+					"timestamp",
+					"travel",
+					"weaponexp",
+					"workstats"
+				]
+			},
+			"Property" : {
+				"Base" : "https://api.torn.com/property/[PROPERTY_ID]?selections=[SELECTION]&key=[KEY]&comment=[COMMENT]",
+				"Selections" : [
+					"property",
+					"timestamp"
+				]
+			},
+			"Faction" : {
+				"Base" : "https://api.torn.com/faction/[FACTION_ID]?selections=[SELECTION]&key=[KEY]&comment=[COMMENT]",
+				"Selections" : [
+					"basic",
+					"chain",
+					"hof",
+					"rankedwars",
+					"territory",
+					"timestamp"
+				]
+			},
+			"Company" : {
+				"Base" : "https://api.torn.com/company/[COMPANY_ID]?selections=[SELECTION]&key=[KEY]&comment=[COMMENT]",
+				"Selections" : [
+					"employees",
+					"profile",
+					"timestamp"
+				]
+			},
+			"Market" : {
+				"Base" : "https://api.torn.com/market/[ITEM_ID]?selections=[SELECTION]&key=[KEY]&comment=[COMMENT]",
+				"Selections" : [
+					"bazaar",
+					"itemmarket",
+					"pointsmarket",
+					"timestamp"
+				]
+			},
+			"Torn" : {
+				"Base" : "https://api.torn.com/faction/[FACTION_ID]?selections=[SELECTION]&key=[KEY]&comment=[COMMENT]",
+				"Selections" : [
+					"bank",
+					"cards",
+					"cityshops",
+					"companies",
+					"competition",
+					"dirtybombs",
+					"education",
+					"factiontree",
+					"gyms",
+					"honors",
+					"items",
+					"logcategories",
+					"logtypes",
+					"medals",
+					"organisedcrimes",
+					"pawnshop",
+					"pokertables",
+					"properties",
+					"rackets",
+					"raids",
+					"rankedwars",
+					"rockpaperscissors",
+					"searchforcash",
+					"shoplifting",
+					"stats",
+					"stocks",
+					"territorynames",
+					"territorywars",
+					"timestamp"
+				]
+			}
+		},
+		"v2" : {
+			"User" : {
+				"Base" : "",
+				"Curl" : "curl -X 'GET' 'https://api.torn.com/v2/user/[SELECTION]?[PARAMETERS]' -H 'accept: application/json' -H 'Authorization: ApiKey [KEY]'",
+				"Selections" : {
+					"attacks" : {
+						"limit" : "Max 100",
+						"sort" : "DESC or ASC",
+						"to" : "Timestamp Start",
+						"from" : "Timestamp End"
+					},
+					"attacksfull" : {
+						"limit" : "Max 1000",
+						"sort" : "DESC or ASC",
+						"to" : "Timestamp Start",
+						"from" : "Timestamp End"
+					},
+					"bounties" : {},
+					"calendar" : {},
+					"crimes" : {},
+					"enlistedcars" : {},
+					"factionbalance" : {},
+					"forumfeed" : {},
+					"forumfriends" : {},
+					"forumposts" : {},
+					"forumsubscribedthreads" : {},
+					"forumthreads" : {},
+					"hof" : {},
+					"itemmarket" : {},
+					"jobranks" : {},
+					"organizedcrime" : {},
+					"personalstats" : {},
+					"races" : {},
+					"timestamp" : {},
+					"ammo" : {},
+					"bars" : {},
+					"basic" : {},
+					"battlestats" : {},
+					"bazaar" : {},
+					"cooldowns" : {},
+					"criminalrecord" : {},
+					"discord" : {},
+					"display" : {},
+					"education" : {},
+					"equipment" : {},
+					"events" : {},
+					"gym" : {},
+					"honors" : {},
+					"icons" : {},
+					"inventory" : {},
+					"jobpoints" : {},
+					"log" : {},
+					"medals" : {},
+					"merits" : {},
+					"messages" : {},
+					"missions" : {},
+					"money" : {},
+					"networth" : {},
+					"newevents" : {},
+					"newmessages" : {},
+					"notifications" : {}, 
+					"perks" : {}, 
+					"profile" : {},
+					"properties" : {},
+					"refills" : {},
+					"reports" : {},
+					"revives" : {},
+					"revivesfull" : {},
+					"skills" : {},
+					"stocks" : {},
+					"travel" : {},
+					"weaponexp" : {},
+					"workstats" : {}
+				}
+			},
+			"Property" : {
+				"Base" : "",
+				"Curl" : "curl -X 'GET' 'https://api.torn.com/v2/property/[SELECTION]?[PARAMETERS]' -H 'accept: application/json' -H 'Authorization: ApiKey [KEY]'",
+				"Selections" : {}
+			},
+			"Faction" : {
+				"Base" : "",
+				"Curl" : "curl -X 'GET' 'https://api.torn.com/v2/faction/[SELECTION]?[PARAMETERS]' -H 'accept: application/json' -H 'Authorization: ApiKey [KEY]'",
+				"Selections" : {}
+			},
+			"Company" : {
+				"Base" : "",
+				"Curl" : "curl -X 'GET' 'https://api.torn.com/v2/company/[SELECTION]?[PARAMETERS]' -H 'accept: application/json' -H 'Authorization: ApiKey [KEY]'",
+				"Selections" : {}
+			},
+			"Market" : {
+				"Base" : "",
+				"Curl" : "curl -X 'GET' 'https://api.torn.com/v2/market?[SELECTION]?[PARAMETERS]' -H 'accept: application/json' -H 'Authorization: ApiKey [KEY]'",
+				"Selections" : {
+					"itemmarket" : {
+						"id" : "Item ID",
+						"bonus" : "Sort weapons by their bonus",
+						"sort" : "DESC or ASC",
+						"offset" : "Remove this many listings first"
+					},
+					"pointsmarket" : {
+						"No Parameters" : "None"
+					}
+				}
+			},
+			"Torn" : {
+				"Base" : "",
+				"Curl" : "curl -X 'GET' 'https://api.torn.com/v2/torn/[SELECTION]?[PARAMETERS]' -H 'accept: application/json' -H 'Authorization: ApiKey [KEY]'",
+				"Selections" : {}
+			}
+		}
+	},
+    "Flights": {
+		"Mexico": {
+			"flight_path": {
+				"total_time": 13,
+				"minutes_per_day": 110
+			},
+			"profits": {
+				"per_trip": 147000,
+				"daily_max": 12348000
+			},
+			"items": {
+				"AK-47": {"cost": 15000, "sell": 0},
+				"Axe": {"cost": 4200, "sell": 0},
+				"Blank Tokens": {"cost": 100000, "sell": 0},
+				"Bolt Cutters": {"cost": 25, "sell": 0},
+				"Bottle of Tequila": {"cost": 85, "sell": 0},
+				"Card Skimmer": {"cost": 175, "sell": 0},
+				"Claymore Mine": {"cost": 15000, "sell": 0},
+				"Cobra Derringer": {"cost": 70000, "sell": 0},
+				"Crazy Straw": {"cost": 25, "sell": 0},
+				"Dahlia": {"cost": 300, "sell": 0},
+				"Desert Eagle": {"cost": 45000, "sell": 0},
+				"Flak Jacket": {"cost": 7500, "sell": 0},
+				"Flare Gun": {"cost": 300, "sell": 0},
+				"Heckler & Koch SL8": {"cost": 45000, "sell": 0},
+				"Jaguar Plushies": {"cost": 10000, "sell": 0},
+				"Kevlar Gloves": {"cost": 400000, "sell": 0},
+				"Leather Bullwhip": {"cost": 1500, "sell": 0},
+				"M249 SAW": {"cost": 950000, "sell": 0},
+				"Mayan Statue": {"cost": 500, "sell": 0},
+				"Minigun": {"cost": 3000000, "sell": 0},
+				"Ninja Claws": {"cost": 8000, "sell": 0},
+				"Outer Tactical Vest": {"cost": 1000000, "sell": 0},
+				"Samurai Sword": {"cost": 75000, "sell": 0},
+				"Springfield 1911-A1": {"cost": 430, "sell": 0},
+				"Taser": {"cost": 5500, "sell": 0},
+				"Trench Coat": {"cost": 500000, "sell": 0},
+				"Yucca Plant": {"cost": 20000, "sell": 0},
+				"9mm Uzi": {"cost": 1100000, "sell": 0},
+				"ArmaLite M-15A4 Rifle": {"cost": 20000000, "sell": 0}
+			}
+		},
+		"Cayman Islands": {
+			"flight_path": {
+				"total_time": 17,
+				"minutes_per_day": 125
+			},
+			"profits": {
+				"per_trip": 0,
+				"daily_max": 0
+			},
+			"items": {
+				"Banana Orchid": {"cost": 4000, "sell": 0},
+				"Bikini": {"cost": 8000, "sell": 0},
+				"Diamond Bladed Knife": {"cost": 950000, "sell": 0},
+				"Diving Gloves": {"cost": 5000, "sell": 0},
+				"Flippers": {"cost": 10000, "sell": 0},
+				"Harpoon": {"cost": 300000, "sell": 0},
+				"Naval Cutlass": {"cost": 50000000, "sell": 0},
+				"Nodding Turtle": {"cost": 750, "sell": 0},
+				"Snorkel": {"cost": 20000, "sell": 0},
+				"Speedo": {"cost": 6000, "sell": 0},
+				"Steel Drum": {"cost": 1500, "sell": 0},
+				"Stingray Plushie": {"cost": 400, "sell": 0},
+				"Tavor TAR-21": {"cost": 495000, "sell": 0},
+				"Trout": {"cost": 10000, "sell": 0},
+				"Wetsuit": {"cost": 30000, "sell": 0}
+			}
+		},
+		"Canada": {
+			"flight_path": {
+				"total_time": 19,
+				"minutes_per_day": 135
+			},
+			"profits": {
+				"per_trip": 0,
+				"daily_max": 0
+			},
+			"items": {
+				"Aluminum Plate": {"cost": 1125, "sell": 0},
+				"Crocus": {"cost": 600, "sell": 0},
+				"Fire Hydrant": {"cost": 20000, "sell": 0},
+				"Hockey Stick": {"cost": 400, "sell": 0},
+				"Ice Pick": {"cost": 20000, "sell": 0},
+				"Ithaca 37": {"cost": 10000, "sell": 0},
+				"Lorcin 380": {"cost": 300, "sell": 0},
+				"Mountie Hat": {"cost": 30000, "sell": 0},
+				"PVC Cards": {"cost": 12500, "sell": 0},
+				"Safety Boots": {"cost": 77000, "sell": 0},
+				"Wolverine Plushie": {"cost": 30, "sell": 0},
+				"Cannabis": {"cost": "Changes Daily", "sell": 0},
+				"Ecstasy": {"cost": "Changes Daily", "sell": 0},
+				"PCP": {"cost": "Changes Daily", "sell": 0},
+				"Vicodin": {"cost": "Changes Daily", "sell": 0},
+				"Xanax": {"cost": "Changes Daily", "sell": 0}
+			}
+		},
+		"Hawaii": {
+			"flight_path": {
+				"total_time": 61,
+				"minutes_per_day": 500
+			},
+			"profits": {
+				"per_trip": 0,
+				"daily_max": 0
+			},
+			"items": {
+				"Bushmaster Carbon 15 Type 21s": {"cost": 15000, "sell": 0},
+				"Coconut Bra": {"cost": 750000, "sell": 0},
+				"HEG": {"cost": 20000, "sell": 0},
+				"Large Suitcase": {"cost": 10000000, "sell": 0},
+				"Medium Suitcase": {"cost": 4000000, "sell": 0},
+				"Orchid": {"cost": 700, "sell": 0},
+				"Pele Charm": {"cost": 2000, "sell": 0},
+				"Small Suitcase": {"cost": 2000000, "sell": 0},
+				"Taurus": {"cost": 650, "sell": 0},
+				"Type 98 Anti Tank": {"cost": 25000000, "sell": 0}
+			}
+		},
+		"United Kingdom": {
+			"flight_path": {
+				"total_time": 73,
+				"minutes_per_day": 520
+			},
+			"profits": {
+				"per_trip": 0,
+				"daily_max": 0
+			},
+			"items": {
+				"Claymore Sword": {"cost": 100000, "sell": 0},
+				"Crossbow": {"cost": 900, "sell": 0},
+				"Cricket Bat": {"cost": 15000, "sell": 0},
+				"Dart Board": {"cost": 750, "sell": 0},
+				"Dog Treats": {"cost": 25, "sell": 0},
+				"Enfield SA-80": {"cost": 250000, "sell": 0},
+				"Flail": {"cost": 8000000, "sell": 0},
+				"Frying Pan": {"cost": 400, "sell": 0},
+				"Grenade": {"cost": 10000, "sell": 0},
+				"Heather": {"cost": 5000, "sell": 0},
+				"Inkwell": {"cost": 375, "sell": 0},
+				"Model Space Ship": {"cost": 17500, "sell": 0},
+				"Nessie Plushie": {"cost": 200, "sell": 0},
+				"Paper Weight": {"cost": 1500, "sell": 0},
+				"Red Fox Plushie": {"cost": 1000, "sell": 0},
+				"Sextant": {"cost": 25000, "sell": 0},
+				"Ship in a Bottle": {"cost": 40000, "sell": 0},
+				"Stick Grenade": {"cost": 8000, "sell": 0},
+				"Tailors Dummy": {"cost": 10000, "sell": 0},
+				"WWII Helmet": {"cost": 89500, "sell": 0},
+				"Cannabis": {"cost": "Changes Daily", "sell": 0},
+				"Ecstasy": {"cost": "Changes Daily", "sell": 0},
+				"PCP": {"cost": "Changes Daily", "sell": 0},
+				"Shrooms": {"cost": "Changes Daily", "sell": 0},
+				"Vicodin": {"cost": "Changes Daily", "sell": 0},
+				"Xanax": {"cost": "Changes Daily", "sell": 0}
+			}
+		},
+		"Argentina": {
+			"flight_path": {
+				"total_time": 75,
+				"minutes_per_day": 535
+			},
+			"profits": {
+				"per_trip": 0,
+				"daily_max": 0
+			},
+			"items": {
+				"Ceibo Flower": {"cost": 500, "sell": 0},
+				"Compass": {"cost": 2500, "sell": 0},
+				"Flamethrower": {"cost": 3000000, "sell": 0},
+				"Liquid Body Armor": {"cost": 7500000, "sell": 0},
+				"Macana": {"cost": 100000, "sell": 0},
+				"Monkey Plushie": {"cost": 400, "sell": 0},
+				"Soccer Ball": {"cost": 50, "sell": 0},
+				"Tear Gas": {"cost": 15000, "sell": 0},
+				"Throwing Knife": {"cost": 35000, "sell": 0},
+				"Cannabis": {"cost": "Changes Daily", "sell": 0},
+				"Ketamine": {"cost": "Changes Daily", "sell": 0},
+				"LSD": {"cost": "Changes Daily", "sell": 0},
+				"Shrooms": {"cost": "Changes Daily", "sell": 0},
+				"Speed": {"cost": "Changes Daily", "sell": 0}
+			}
+		},
+		"Switzerland": {
+			"flight_path": {
+				"total_time": 79,
+				"minutes_per_day": 570
+			},
+			"profits": {
+				"per_trip": 0,
+				"daily_max": 0
+			},
+			"items": {
+				"Cannabis": {"cost": "Changes Daily", "sell": 0},
+				"Chamois Plushie": {"cost": 400, "sell": 0},
+				"Dozen White Roses": {"cost": 950000000, "sell": 0},
+				"Edelweiss": {"cost": 900, "sell": 0},
+				"Flash Grenade": {"cost": 12000, "sell": 0},
+				"Jackhammer": {"cost": 5000000, "sell": 0},
+				"Ketamine": {"cost": "Changes Daily", "sell": 0},
+				"LSD": {"cost": "Changes Daily", "sell": 0},
+				"Neumune Tablet": {"cost": 6500000, "sell": 0},
+				"PCP": {"cost": "Changes Daily", "sell": 0},
+				"Shrooms": {"cost": "Changes Daily", "sell": 0},
+				"SIG 552": {"cost": 7500000, "sell": 0},
+				"Snowboard": {"cost": 6000, "sell": 0},
+				"Speed": {"cost": "Changes Daily", "sell": 0},
+				"Swiss Army Knife": {"cost": 2500, "sell": 0}
+			}
+		},
+		"Japan": {
+			"flight_path": {
+				"total_time": 103,
+				"minutes_per_day": 820
+			},
+			"profits": {
+				"per_trip": 0,
+				"daily_max": 0
+			},
+			"items": {
+				"BT MP9": {"cost": 55000, "sell": 0},
+				"Bottle of Saké": {"cost": 39, "sell": 0},
+				"Chain Whip": {"cost": 2500, "sell": 0},
+				"Cherry Blossom": {"cost": 500, "sell": 0},
+				"Chopsticks": {"cost": 25, "sell": 0},
+				"Ecstasy": {"cost": "Changes Daily", "sell": 0},
+				"Flexible Body Armor": {"cost": 15000000, "sell": 0},
+				"Glow Stick": {"cost": 10, "sell": 0},
+				"Kabuki Mask": {"cost": 10000, "sell": 0},
+				"Kama": {"cost": 50000, "sell": 0},
+				"Ketamine": {"cost": "Changes Daily", "sell": 0},
+				"Kodachi": {"cost": 95000, "sell": 0},
+				"Maneki Neko": {"cost": 50000, "sell": 0},
+				"Metal Nunchakus": {"cost": 400000, "sell": 0},
+				"Ninja Stars": {"cost": 500, "sell": 0},
+				"Opium": {"cost": "Changes Daily", "sell": 0},
+				"Sai": {"cost": 1000, "sell": 0},
+				"Sensu": {"cost": 500, "sell": 0},
+				"Shrooms": {"cost": "Changes Daily", "sell": 0},
+				"Speed": {"cost": "Changes Daily", "sell": 0},
+				"Sumo Doll": {"cost": 300, "sell": 0},
+				"Vicodin": {"cost": "Changes Daily", "sell": 0},
+				"Wooden Nunchakus": {"cost": 5000, "sell": 0},
+				"Xanax": {"cost": "Changes Daily", "sell": 0},
+				"Yakitori Lantern": {"cost": 4500, "sell": 0}
+			}
+		},
+		"United Arab Emirates": {
+			"flight_path": {
+				"total_time": 123,
+				"minutes_per_day": 960
+			},
+			"profits": {
+				"per_trip": 0,
+				"daily_max": 0
+			},
+			"items": {
+				"Camel Plushie": {"cost": 14000, "sell": 0},
+				"Digital Organizer": {"cost": 12000000000, "sell": 0},
+				"Gold Laptop": {"cost": 8000000000, "sell": 0},
+				"Gold Plated AK-47": {"cost": 25000000000, "sell": 0},
+				"Handbag": {"cost": 16000000000, "sell": 0},
+				"Pillow": {"cost": 10000000, "sell": 0},
+				"Pink Mac-10": {"cost": 23000000000, "sell": 0},
+				"Proda Sunglasses": {"cost": 100000, "sell": 0},
+				"Sports Shades": {"cost": 10000, "sell": 0},
+				"Sports Sneakers": {"cost": 14000000000, "sell": 0},
+				"Tribulus Omanense": {"cost": 6000, "sell": 0}
+			}
+		},
+		"South Africa": {
+			"flight_path": {
+				"total_time": 135,
+				"minutes_per_day": 1080
+			},
+			"profits": {
+				"per_trip": 0,
+				"daily_max": 0
+			},
+			"items": {
+				"African Violet": {"cost": 2000, "sell": 0},
+				"Afro Comb": {"cost": 50000, "sell": 0},
+				"Combat Boots": {"cost": 2400000, "sell": 0},
+				"Combat Gloves": {"cost": 2100000, "sell": 0},
+				"Combat Helmet": {"cost": 3100000, "sell": 0},
+				"Combat Pants": {"cost": 2950000, "sell": 0},
+				"Combat Vest": {"cost": 3500000, "sell": 0},
+				"Elephant Statue": {"cost": 500, "sell": 0},
+				"Knuckle Dusters": {"cost": 750, "sell": 0},
+				"Lion Plushie": {"cost": 400, "sell": 0},
+				"LSD": {"cost": "Changes Daily", "sell": 0},
+				"Mag 7": {"cost": 60000, "sell": 0},
+				"Opium": {"cost": "Changes Daily", "sell": 0},
+				"PCP": {"cost": "Changes Daily", "sell": 0},
+				"Shrooms": {"cost": "Changes Daily", "sell": 0},
+				"Smoke Grenade": {"cost": 20000, "sell": 0},
+				"Spear": {"cost": 600, "sell": 0},
+				"Vektor CR-21": {"cost": 7500, "sell": 0},
+				"Xanax": {"cost": "Changes Daily", "sell": 0}
+			}
+		}
+	}
+}

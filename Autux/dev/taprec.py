@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
-import subprocess, os, time, re, argparse
+
 from datetime import datetime
+import subprocess
+import argparse
+import time
+import os
+import re
 
 def cenv():
     deps=["curl", "termux-api", "android-tools", "python3", "python3-pip"]
