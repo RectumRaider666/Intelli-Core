@@ -1,31 +1,47 @@
 {
-// System Control Settings
-    // Prints to the console
-    "sys.mode.debug": true,
-    // Will not use real trade execution
+
+// Setting.json Draft 1
+
+// System Mode Settings
+// **Note: If two modes are enabled at once, the lowest numbered pri mode will take priority. 
+// **Note: An Invalid value in any system.mode setting will force all but Free Paper-Mode to be false.
+
+    // Enables Free Paper-Mode (pri #1)
     "sys.mode.paper": true,
-    // will actively trade
+
+    // Enables Tracked Paper-Mode (pri #2)
+    "sys.mode.train": false,
+
+    // Enables Strat-Testing Mode (pri #3)
+    "sys.mode.test": false,
+
+    // Enables Real-World Trading (pri #4)
     "sys.mode.live": false,
 
-// General Execution Settings
-    // log level
-    "gen.log.level": "info",
-    // log filename
-    "gen.log.file": "data/system.logs",
-    // log max entries x1000 
-    "gen.log.max_len": 100,
-    // whether or not to delete old logs
-    "gen.log.cycle": false,
+// System Logging Controls 
 
-// Configuration of the CFX data scrapper
-    // How long a single cfx process will run before being replaced
+    // logging level (Def: info)
+    "log.level": "info",
+
+    // Send Logs to a custom file
+    "log.custom": "data/system.logs",
+
+    // Max log storage size in Mb(Def: 1, Cap:10)
+    "log.max.size: 5,
+
+    // Auto-Delete expired logs (Def: False)
+    "log.expire.del": false,
+
+    // 
+
+    // How long a single cfx process will run before being replaced (left long and they will go stale, returning the same exact data every output, shortlived replacements massively increase resource consumption and introduces minor system latency)
     "cfx.delay_min": 60,
     // How often it attempts to fetch updates
     "cfx.fetch_ms": 1000,
     // How long an old cfx process will stay alive after the start of a new one
     "cfx.overlap_sec": 10,
 
-// Assigning Index-Values to the Shared Memory Object (NOT for your average person, setting these wrong can crash the entire program)
+// Assigning Index-Values to the Shared Memory Object (NOT for your average person, setting these wrong can crash the entire program, but creating your own + a plugin for more data streams could revolutionize the software)
     // Shared Memory Objects declared block values
     "shm.idx_btc": 0,
     "shm.idx_avg": 1,
@@ -36,31 +52,69 @@
     "shm.idx_window": 6,
 
 // Managing the rolling ring buffer window of price data
-    "window.size": 3600,
+    // How many data points the window contains
+    "window.buffer.size": 3600,
+    // How many previous price points are used to calculate the current avg_price (kalshi uses 60)
+    "window.avg.size": 60,
 
 // Configurations of how indicators are calculated
-    // How many previous price points are used to calculate the current avg_price (kalshi uses 60)
-    "tech.avg_len": 60,
-    // How many candles are considered in RSI calcs
-    "tech.rsi_len": 14,
-    // How many candels are considered in ATR calcs
-    "tech.atr_len": 14,
+    // How many candles are considered in RSI slow calcs
+    "tech.rsi.slow": 24,
+    // How many candles are considered in RSI fast calcs
+    "tech.rsi.fast": 9,
+    // Rsi value considered over Bought
+    "tech.rsi.high": 80,
+    // Rsi value considered over Sold
+    "tech.rsi.low": 20,
+    // How many candels are considered in ATR wide calcs
+    "tech.atr.wide": 40,
+    // How many candels are considered in ATR mid calcs
+    "tech.atr.mid": 15,
+    //How many candels are considered in ATR thin calcs
+    "tech.atr.thin": 7
 
 // Trading Constraints and Risk Managment
-    // The minial amount of reward needed for entry against 1 risk point
+    // The minimal amount of reward needed for entry against 1 risk basis point
     "trade.r_r.min": 2,
-    // The max amound of reward the bot will actively search for
+    // The max reward the bot will consider per trade (helps to keep entry prices more grouped together and generally 'safer' in practice, though this does leave money on the table in some cases)
     "trade.r_r.max": 5,
-    // The minimum difference in cents needed between the stoploss and the take profit
-    "trade.stop.min_size": 3,
-    // The max differencence in cents reached before dymanically raising stoplosses closer to the take profit
-    "trade.stop.max_size": 4,
-    // The max amount of time in sec left on a market before considering a trade (There needs to be less time left than this value)
+
+    // The minimum difference in cents needed between the stoploss and the entry price
+    "trade.stop.min": 2,
+    // Enables raising the stop loss price on an active trade (this can help reduce risk, and generate a higher success rate, but it can also cause you to get stopped out way more often)
+    "trade.stop.inc": true,
+    // The max differences in share price (cents) against entry price reached before dymanically raising the stoplosses closer to the take profit
+    "trade.stop.max": 4,
+
+    // Enable a Simplistic Incremental take profit
+    "trade.take_inc": true,
+    // The Percentage of entry cost covered by the incremental take profit sell
+    "trade.take_inc.perc": 75,
+    // The trades P/L required to trigger the incremental stop loss (must be set below trade.take_all.perc, and above the trade.r_r.min)
+    "trade.take_inc.trigger : 7,
+    // The Percent of Profit on any one trade to close out completely and realize all profits (must be set higher than trade.r_r.min, lower than trade.takeall.perc to get triggered. Set to 0 to override this fully)
+    "trade.take_all.perc": 10,
+
+    // The max amount of time in sec left on a market before considering a trade (There needs to be less time left than this value. set to 0 to nullify)
     "trade.entry.max_tte":  900,
-    // The minimal amount of time in sec left before market close to still consider a trade (There needs to be more time left than this value)
+    // The minimal amount of time in sec left before exp to still consider a trade (There needs to be more time left than this value. set to 0 to nullify)
     "trade.entry.min_tte": 30,
+    
     // The max % of account value that any one trade can actively invest
-    "trade.pos.max_perc": 3,
-    // The max % of account value that all trades can have actively invested at once
-    "trade.acc.max_perc": 10
+    "trade.pos.perc": 10,
+    // The max % of account value that all trades can actively have invested at once
+    "trade.pos.max_perc": 15,
+
+// GIVE IT A REST!! 
+// Note: Paper-Mode ignores all REST settings
+    // The amount of hours, with a default min of 5, REST takes. (recommended 16 - 24)
+    "trade.rest.wait": 16,
+    // The amount of trades lost out of 6 needed to trigger REST. Useful as a quick reacting guardrail when first transitioning from testing to commiting real money to your setup (set to 0 or 6+ to nullify)
+    "trade.rest.rate6": 2,
+    // A higher rate of comparison to lower the guard rails reactivity some. For use after gaining conviction in a lower comp rate (set to 0 or 12 to nullify)
+    "trade.rest.rate12": 4,
+    // A full days comp ratio to lower the guards to their recommended minimum. For use as protection against edge cases in the market, logic / comp errors, etc. (set to 0 or 24+ to nullify)
+     "trade.rest.rate24": 10,
+    // The amount of trades between 3 & 5 lost in a row needed to trigger a HARD-REST. (Will not auto-restart after REST expires. (This is to not only stop a few bad streaks from causing some harm, but is primarily to stop any bad or newly outdated strategies from running unchecked. values outside the range will default to the min)
+    "trade.rest.max": 4,
 }
