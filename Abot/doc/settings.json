@@ -29,7 +29,7 @@
     "log.custom": null,
 
     // Max log storage size (Mb:Def=5)
-    "log.max: 5,
+    "log.max": 5,
 
     // Auto-Delete expired logs (Def=F)
     "log.exp.remove": false,
@@ -60,7 +60,7 @@
 
 // Technical Indicator Calculation Preference //
 
-  /RSI
+  //RSI
     // Rsi Short Length
     "tech.rsi.slow": 9,
 
@@ -73,7 +73,7 @@
     // Rsi OverSold Value
     "tech.rsi.low": 20,
 
-  /ATR
+  //ATR
     // Wide ATR Width
     "tech.atr.wide": 40,
 
@@ -83,18 +83,18 @@
     //Thin ATR Width
     "tech.atr.thin": 7,
 
-  /HTR
+  //HTR
     // Wide HTR Width
-    'tech.htr.wide": 50,
+    "tech.htr.wide": 50,
 
     // Thin HTR Width
-    "tech.htr.thin": 10
+    "tech.htr.thin": 10,
 
 
 
 // Trading Constraints and Risk Managment //
 
-  /Entry - Buy risky shit to earn a possible reward
+  //Entry - Buy risky shit to earn a possible reward
     // Min R:R rate for Entry (Def=2)
     "entry.rr.min": 2,
 
@@ -114,9 +114,9 @@
     "entry.max.risk": 12,
 
 
-  /Stop - Preplanned Exits to minimize loss
+  //Stop - Preplanned Exits to minimize loss
     // Place a market order at time of Stop Trigger
-    "stop.market.enable": True,
+    "stop.market.enable": true,
    
     // Enable Stop-Raising (Def=True)
     "stop.raise.enable": true,
@@ -137,9 +137,9 @@
     "stop.raise.delay": 60,
 
 
-  /Take - Realizing Profits Structurally
+  //Take - Realizing Profits Structurally
 
-   /Inc-Sells : Selling incremental portions of the trade to reduce entry cost & risk
+   //Inc-Sells : Selling incremental portions of the trade to reduce entry cost & risk
 
     // Enable Take Incremental Sells (Def=True)
     "take.inc.enable": true,
@@ -159,7 +159,7 @@
     // Min Growth Room for Inc-Sells (Cents)
     "take.inc.room": 5,
 
-  /Shoot-Selling : Wait to pass TakeProfit, at first drawback, market dump the entire trade
+  //Shoot-Selling : Wait to pass TakeProfit, at first drawback, market dump the entire trade
     // Enable Take Shooting (Def=True)
     "take.shoot.enable": true,
 
@@ -167,7 +167,7 @@
     "take.shoot.size": 2,
 
   
-  /Rest- forcing you to JUST GIVE IT A REST ALREADY
+  //Rest- forcing you to JUST GIVE IT A REST ALREADY
     // REST timer length (Hr:Def=16)
     "rest.len": 16,
 
@@ -184,6 +184,6 @@
     "rest.lock.len": 4,
 
     // Max Daily Acc PL Loss before LOCK-REST
-    "rest.lock.pl": 15,
+    "rest.lock.pl": 15
     
 }
