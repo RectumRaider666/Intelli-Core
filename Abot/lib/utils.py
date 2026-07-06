@@ -2,11 +2,10 @@ from cryptography.hazmat.primitives.asymmetric import padding, rsa
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.backends import default_backend
 from cryptography.exceptions import InvalidSignature
-from playwright.async_api import async_playwright
 from datetime import datetime, timedelta
+from dataclasses import dataclass
 from pathlib import Path
 import urllib.parse
-import contextlib
 import aiosqlite
 import functools
 import requests
@@ -16,15 +15,16 @@ import base64
 import json
 import pytz
 import sys
-import io
+import os
 
-root = Path(__file__).parent.parent
+ROOT = Path(__file__).parent.parent
 settf = ROOT / "doc" / "settings.json"
-logf = root / "data" / "sys.log"
-with open(str(root / "doc" / "api.key"), "r") as f:
+logf = ROOT / "data" / "sys.log"
+with open(str(ROOT / "doc" / "api.key"), "r") as f:
     key = f.read().strip()
 
 ## <!-- [Settings] ----->
+@dataclass
 class SHM_IDX:
     """Applies Strict Static Schema to the SHM Index"""
     IDX_BTC = 1
@@ -37,9 +37,9 @@ class SHM_IDX:
     IDX_ATR_W = 8
     IDX_HTR_T = 9
     IDX_HTR_W = 10
-    IDX_RBC = 11
-    IDX_WINDOW = 12
-    WINDOW_SIZE = 3600
+    IDX_ACC = 11
+    IDX_RBC = 12
+    IDX_WINDOW = 13
 
 @dataclass
 class Sett:
@@ -49,6 +49,7 @@ class Sett:
     LOG_FILE: Path = settf
     LOG_SIZE: int = 5
     LOG_REMOVE: bool = False
+    WINDOW_SIZE: int = 3600
     AVG_LEN: int = 60
     RSI_LEN_S: int = 9
     RSI_LEN_L: int = 24
@@ -235,8 +236,8 @@ class SettingsLoader:
 ## <!-- [Database] ----->
 def init_db():
     """Apply the schema to the database"""
-    schema_path = root / "data" / "schema.sql"
-    db_path = root / "data" / "data.db"
+    schema_path = ROOT / "data" / "schema.sql"
+    db_path = ROOT / "data" / "data.db"
     conn = sqlite3.connect(db_path)
     with open(schema_path, "r") as f:
         schema = f.read()
@@ -246,7 +247,7 @@ def init_db():
 
 async def get_db():
     """Return an async connection to the database"""
-    db_path = root / "data" / "data.db"
+    db_path = ROOT / "data" / "data.db"
     conn = await aiosqlite.connect(db_path)
     await conn.execute("PRAGMA journal_mode=WAL;")
     await conn.execute("PRAGMA synchronous=NORMAL;")
@@ -351,7 +352,7 @@ class Auth:
 def balance() -> str:
     """Return current Kalshi balance and holdings value"""
     auth = Auth()
-    auth.set_key(key, str(root / "docs" / "private_key.txt"))
+    auth.set_key(key, str(ROOT / "docs" / "private_key.txt"))
     url = "https://external-api.kalshi.com/trade-api/v2/portfolio/balance"
     headers = auth.headers("GET", url)
     try:
@@ -396,7 +397,7 @@ def get_markets(strike:str):
 def get_orders() -> list:
     """Return a dictionary of resting Kalshi orders"""
     auth = Auth()
-    auth.set_key(key, str(root / "docs" / "private_key.txt"))
+    auth.set_key(key, str(ROOT / "docs" / "private_key.txt"))
     url = "https://external-api.kalshi.com/trade-api/v2/portfolio/orders"
     headers = auth.headers("GET", url)
     try:
@@ -429,7 +430,7 @@ def get_orders() -> list:
 def del_orders() -> str:
     """Cancel all resting Kalshi orders"""
     auth = Auth()
-    auth.set_key(key, str(root / "docs" / "private_key.txt"))
+    auth.set_key(key, str(ROOT / "docs" / "private_key.txt"))
     ords = get_orders()
     ids = list(ords.keys())
     for id in ids:
@@ -445,7 +446,7 @@ def del_orders() -> str:
 def order(ticker:str, act:str, side:str, price:float, amount:int):
     """Places a new Kalshi order"""
     auth = Auth()
-    auth.set_key(key, str(root / "docs" / "private_key.txt"))
+    auth.set_key(key, str(ROOT / "docs" / "private_key.txt"))
     url = "https://external-api.kalshi.com/trade-api/v2/portfolio/orders"
     payload = {
         "ticker": ticker,
