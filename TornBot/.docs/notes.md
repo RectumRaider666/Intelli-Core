@@ -61,37 +61,7 @@ Notes on building automations, extensions, and scripts for Torn RPG
   - [Torn Tools](https://addons.mozilla.org/en-US/firefox/addon/torn-tools/) - Extension for showing Player Status
 
 ---
-
 ### [1.3] Accounts
-
-#### [1.3.1] Bot Account
-
-```ini
-[Account]
-    username = 'BoredMongrel'
-    email = guildedsmithy@gmail.com
-    pass = 'pisces666'
-    question = 'Main'
-
-[API]
-    full = 'htp4MnHz3O0AeH4P'
-    limited = 'omCZLshoQlRv1Ae6'
-    minimal = 'wQrcCfRTeQ7trKRP'
-    public = 'XoDkhXOiY8ROrAvn'
-
-```
-
-#### [1.3.2] Main Account
-
-```ini
-[Account]
-    username = 'AngrySatan666'
-    email = sir.barden15@gmail.com
-    pass = 'tfukgobx'
-
-    [API]
-        key1 = ''
-```
 
 ---
 
