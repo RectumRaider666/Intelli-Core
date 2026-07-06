@@ -56,6 +56,7 @@ class Sett():
     def fetch_settings(self):
         with open(settf, "r") as f:
             ## PARSE & APPEND ATTRIBUTES
+            pass
 
 ## <!-- [Database] ----->
 def init_db():
