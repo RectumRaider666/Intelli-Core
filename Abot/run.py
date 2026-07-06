@@ -1,5 +1,5 @@
 ## <!-- [1] Imports ----->
-from lib.utils import SettingsLoader, Tee, logg, get_db, ts
+from lib.utils import SettingsLoader, SHM_IDX, Tee, logg, init_db, ts
 from multiprocessing import shared_memory
 from datetime import datetime, timedelta
 from dataclasses import dataclass
@@ -12,6 +12,7 @@ import json
 import pytz
 import time
 import sys
+import os
 
 ## <!-- [2] Variables ----->
 # /2.1/ Directory
@@ -20,20 +21,26 @@ win_script = root / "lib" /"window.py"
 schema_path = root / "data" / "schema.sql"
 db_path = root / "data" / "data.db"
 
-# /2.2/ Trackers
-up_count = 0
-OBJ_SIZE = IDX_WINDOW + WINDOW_SIZE     # The total size of the object
-
-
-
 ## <!-- [3] Helpers ----->
 def create_window():
     """Create the shared_memory object"""
     shm = None
-    shm = shared_memory.SharedMemory(create=True, size=OBJ_SIZE * 8)
+    for f in os.listdir(Path("/dev/shm")):
+        if f == "kbot.window.shm":
+            try:
+                shm = shared_memory.SharedMemory(name=str(f))
+                shm.close()
+                shm.unlink()
+            except FileNotFoundError:
+                logger.warning(f"Segment {f} disappeared during cleanup")
+                print("Segment ")
+            except Exception as e:
+                logger.warning(f"Unexpected error during cleanup: {e}")
+    OBJ_SIZE = cfg.WINDOW_SIZE + shmID.IDX_WINDOW
+    shm = shared_memory.SharedMemory(create=True, size=OBJ_SIZE * 8, name='kbot.window.shm')
     state = np.ndarray((OBJ_SIZE,), dtype=np.float64, buffer=shm.buf)
     state[:] = 0.0
-    state[IDX_RBC] = 0
+    state[shmID.IDX_RBC] = 0
     db_path = root / "data" / "data.db"
     conn = sqlite3.connect(db_path)
     rows = conn.execute("""SELECT value FROM prices ORDER BY rowid DESC LIMIT 3600""").fetchall()
@@ -41,20 +48,24 @@ def create_window():
     rows.reverse()
     prices = np.array([row[0] for row in rows], dtype=np.float64)
     if prices.size:
-        fill_count = min(prices.size, WINDOW_SIZE)
-        state[IDX_WINDOW:IDX_WINDOW + fill_count] = prices[:fill_count]
+        fill_count = min(prices.size, cfg.WINDOW_SIZE)
+        state[shmID.IDX_WINDOW:shmID.IDX_WINDOW + fill_count] = prices[:fill_count]
     return shm, state
 
-def update() -> float:
+def update() -> tuple:
+    """Update the shared memory segment and return adjusted tte and now"""
     now = datetime.now(pytz.timezone('America/New_York'))
     nxthr = now.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1)
     remaining = (nxthr - now).total_seconds()
     tte = remaining
     candles = get_candles()
     atr(candles)
-    return tte
+    return tte, now
 
-def get_settings() -> Data:
+def get_settings():
+    """Init DB, SHM, Logger, and Config"""
+    init_db()
+    shmID = SHM_IDX()
     cfg = SettingsLoader()
     logger = logging.getLogger()
     LEVELS = {
@@ -69,16 +80,17 @@ def get_settings() -> Data:
         handler = logging.FileHandler(cfg.LOG_FILE)
         handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(message)s"))
         logger.addHandler(handler)
-    return cfg
+    logger.info(f"Kbot started")
+    return shmID, cfg, logger
 
 ## <!-- [4] MATH ----->
 def get_candles():
     """Converts the Ring Buffer into 1m Candles"""
-    prices = state[IDX_WINDOW:IDX_WINDOW + WINDOW_SIZE]
-    oldest = int(state[IDX_RBC])
+    prices = state[shmID.IDX_WINDOW:shmID.IDX_WINDOW + cfg.WINDOW_SIZE]
+    oldest = int(state[shmID.IDX_RBC])
     candles = np.empty((60, 4), dtype=np.float64)
     for i in range(60):
-        start = (oldest + i * 60) % WINDOW_SIZE
+        start = (oldest + i * 60) % cfg.WINDOW_SIZE
         block = prices.take(range(start, start + 60), mode="wrap")
         candles[i, 0] = block[0]
         candles[i, 1] = block.max()
@@ -97,40 +109,51 @@ def atr(candles, length:int = 14):
         tr = max(high - low, abs(high - prev_close), abs(low - prev_close))
         true_ranges.append(tr)
         prev_close = candle[3]
-    state[IDX_HTR] = max(true_ranges) if true_ranges else 0.0
-    state[IDX_ATR] = sum(true_ranges) / len(true_ranges) if true_ranges else 0.0
+    state[shmID.IDX_HTR] = max(true_ranges) if true_ranges else 0.0
+    state[shmID.IDX_ATR] = sum(true_ranges) / len(true_ranges) if true_ranges else 0.0
 
 def rsi(candles, length:int = 14):
     """Calculates the RSI"""
     pass
 
 ## <!-- [5] MAIN ----->
-init_db()
-
-
+shmID, cfg, logger = get_settings()
 shm, state = create_window()
-ste = update()
+ste, now = update()
 proc = subprocess.Popen([sys.executable, f"{win_script}", shm.name], stdout = subprocess.DEVNULL)
+upcount = 0
 try:
     while True:
-        if up_count == 60:
-            ste = update()
-            up_count = 0
+        if upcount == 60:
+            ste, now = update()
+            if cfg.TRADE16 == False and now.hour == 16:
+                while now.hour == 16:
+                    logger.info(f"Sleeping through 16 - 17")
+                    time.sleep(ste)
+            upcount = 0
         else:
-            up_count += 1
+            upcount += 1
         report = {
+            "btc_price": state[shmID.IDX_BTC],
             "ste": ste,
             "tte": ste / 60,
-            "btc_price": state[IDX_BTC],
-            "avg_price": state[IDX_AVG],
-            "ind_rsi": state[IDX_RSI],
-            "ind_atr": state[IDX_ATR],
-            "ind_htr": state[IDX_HTR],
-            "buf_cnt": state[IDX_RBC]
+            "avg_price": state[shmID.IDX_AVG],
+            "ind_rsi_s": state[shmID.IDX_RSI_S],
+            "ind_rsi_l": state[shmID.IDX_RSI_L],
+            "ind_atr_t": state[shmID.IDX_ATR_T],
+            "ind_atr_m": state[shmID.IDX_ATR_M],
+            "ind_atr_w": state[shmID.IDX_ATR_W],
+            "ind_htr_t": state[shmID.IDX_HTR_T],
+            "ind_htr_w": state[shmID.IDX_HTR_W],
+            "acc_val": state[shmID.IDX_ACC],
+            "buf_cnt": state[shmID.IDX_RBC]
         }
         print(json.dumps(report, indent=4))
+        logger.info(f"Report: {json.dumps(report, indent=4)}")
         ste -= 1
         time.sleep(1)
+except Exception as e:
+    logger.error(f"Exception Occured: {e}")
 finally:
     proc.terminate()
     shm.close()
