@@ -18,6 +18,9 @@
     // Enables Real-World Trading (pri #4)
     "sys.mode.live": false,
 
+    // Enables Trading Between 4-5pm
+    "sys.trade.16": false,
+
 
 
 // Logging Control //
@@ -62,10 +65,10 @@
 
   //RSI
     // Rsi Short Length
-    "tech.rsi.slow": 9,
+    "tech.rsi.short": 9,
 
     // Rsi Long Length
-    "tech.rsi.fast": 24,
+    "tech.rsi.long": 24,
 
     // Rsi OverBought Value
     "tech.rsi.high": 80,
@@ -111,7 +114,7 @@
     "entry.pos.risk": 5,
 
     // Max Account % in all Trades
-    "entry.max.risk": 12,
+    "entry.pos.max": 12,
 
 
   //Stop - Preplanned Exits to minimize loss
@@ -128,7 +131,7 @@
     "stop.raise.fx": 10,
 
     // Max Stop-Raise Value (Cents:Def=2)
-    "stop.raise.val_max": 2,
+    "stop.raise.val": 2,
 
     // Max Stop Raises per Trade (Def=3)
     "stop.raise.count": 3,
@@ -140,6 +143,8 @@
   //Take - Realizing Profits Structurally
 
    //Inc-Sells : Selling incremental portions of the trade to reduce entry cost & risk
+    // Enable Market Sells at Take (Def=False) Resorts to Limits if F
+    "take.market.enable": false,
 
     // Enable Take Incremental Sells (Def=True)
     "take.inc.enable": true,
@@ -175,7 +180,7 @@
     "rest.rate.6": 3,
 
     // Higher comp rate to lower guardrail sensitivity
-    "rest.rate.12": 4,
+    "rest.rate.12": 5,
 
     // 1:1 Per day comp rate for lowest guardrail sensitivity
     "rest.rate.24": 10,

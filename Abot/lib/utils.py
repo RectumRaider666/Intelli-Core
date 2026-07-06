@@ -25,38 +25,212 @@ with open(str(root / "doc" / "api.key"), "r") as f:
     key = f.read().strip()
 
 ## <!-- [Settings] ----->
-class Sett():
-    """Applies settings.ini configs to an object"""
-    def __init__(self):
-        self.LOG_FILE = None
+class SHM_IDX:
+    """Applies Strict Static Schema to the SHM Index"""
+    IDX_BTC = 1
+    IDX_TTE = 2
+    IDX_AVG = 3
+    IDX_RSI_S = 4
+    IDX_RSI_L = 5
+    IDX_ATR_T = 6
+    IDX_ATR_M = 7
+    IDX_ATR_W = 8
+    IDX_HTR_T = 9
+    IDX_HTR_W = 10
+    IDX_RBC = 11
+    IDX_WINDOW = 12
+    WINDOW_SIZE = 3600
 
-        self.IDX_BTC = None
-        self.IDX_AVG = None
-        self.IDX_RSI = None
-        self.IDX_ATR = None
-        self.IDX_HTR = None
-        self.IDX_RBC = None
-        self.IDX_WINDOW = None
-        self.WINDOW_SIZE = None
+@dataclass
+class Sett:
+    """Prepares Default Dynamic Settings & Types"""
+    MODE: str = "Paper"
+    LOG_LVL: str = "Info"
+    LOG_FILE: str = "default.log"
+    LOG_SIZE: int = 5
+    LOG_REMOVE: bool = False
+    AVG_LEN: int = 60
+    RSI_LEN_S: int = 9
+    RSI_LEN_L: int = 24
+    RSI_HIGH: int = 80
+    RSI_LOW: int = 20
+    ATR_LEN_W: int = 40
+    ATR_LEN_M: int = 15
+    ATR_LEN_T: int = 7
+    HTR_LEN_W: int = 50
+    HTR_LEN_T: int = 10
+    TRADE16: bool = False
+    STOP_MARKET_ENABLE: bool = True
+    TAKE_MARKET_ENABLE: bool = False
+    R_R: float = 2
+    TTE_MAX: int = 900
+    TTE_MIN: int = 30
+    ENTRY_SLIP: float = 2
+    ENTRY_POS_RISK: float = 5
+    ENTRY_POS_MAX: float = 12
+    STOP_RAISE: bool = True
+    STOP_RAISE_RR: float = 3
+    STOP_RAISE_FX: float = 10
+    STOP_RAISE_VAL: float = 2
+    STOP_RAISE_COUNT: int = 3
+    STOP_RAISE_DELAY: int = 60
+    TAKE_PERC: float = 15
+    TAKE_VAL: float = 300
+    REST_LEN: int = 16
+    REST_RATE6: int = 3
+    REST_RATE12: int = 5
+    REST_RATE24: int = 10
+    REST_LOCK_LEN: int = 4
+    REST_LOCK_PL: int = 15
+    CFX_LIFE: int = 60
+    CFX_FETCH: int = 1000
+    CFX_OVERLAP: int = 10
 
-        self.AVG_LEN = None
-        self.RSI_LEN = None
-        self.ATR_LEN = None
+class SettingsLoader:
+    """Applies Dynamic Setting Changes"""
+    def __init__(self, path=settf):
+        self.path = path
 
-        self.min_ri_re = None
-        self.max_re_re = None
-        self.min_pos_size = None
-        self.max_pos_size = None
-        self.max_acc_perc = None
-        self.max_tte = None
-        self.min_tte = None
+    def load(self):
+        with open(self.path, "r") as f:
+            data = json.load(f)
+        cfg = Sett()
+        if data.get("sys.mode.paper"):
+            cfg.MODE = "Paper"
+        elif data.get("sys.mode.train"):
+            cfg.MODE = "Train"
+        elif data.get("sys.mode.test"):
+            cfg.MODE = "Test"
+        elif data.get("sys.mode.live"):
+            cfg.MODE = "Live"
 
-        self.fetch_settings()
+        cfg.LOG_LVL = data.get("log.lvl", cfg.LOG_LVL)
+        custom = data.get("log.custom")
+        if custom and os.path.exists(custom):
+            cfg.LOG_FILE = custom
+        size = data.get("log.max")
+        if size and size >= 1:
+            cfg.LOG_SIZE = size
+        cfg.LOG_REMOVE = bool(data.get("log.remove", cfg.LOG_REMOVE))
 
-    def fetch_settings(self):
-        with open(settf, "r") as f:
-            ## PARSE & APPEND ATTRIBUTES
-            pass
+        life = data.get("cfx.lifetime")
+        if life and 10 <= life <= 120:
+            cfg.CFX_LIFE = life
+        fetch = data.get("cfx.fetch")
+        if fetch and 100 <= fetch <= 1000:
+            cfg.CFX_FETCH = fetch
+        overlap = data.get("cfx.overlap")
+        if overlap and 3 <= overlap <= 60:
+            cfg.CFX_OVERLAP = overlap
+
+        win = data.get("window.buffer.size")
+        if win and win >= 3600:
+            cfg.WINDOW_SIZE = win
+        avg = data.get("window.avg.size")
+        if avg and avg >= 60:
+            cfg.AVG_LEN = avg
+
+        rsi_s = data.get("tech.rsi.short")
+        if rsi_s and 2 <= rsi_s <= 60:
+            cfg.RSI_LEN_S = rsi_s
+        rsi_l = data.get("tech.rsi.long")
+        if rsi_l and 2 <= rsi_l <= 60:
+            cfg.RSI_LEN_L = rsi_l
+        rsi_high = data.get("tech.rsi.high")
+        if rsi_high and rsi_high > 50:
+            cfg.RSI_HIGH = rsi_high
+        rsi_low = data.get("tech.rsi.low")
+        if rsi_low and rsi_low < 50:
+            cfg.RSI_LOW = rsi_low
+
+        atr_w = data.get("tech.atr.wide")
+        if atr_w and 2 <= atr_w <= 60:
+            cfg.ATR_LEN_W = atr_w
+        atr_m = data.get("tech.atr.mid")
+        if atr_m and 2 <= atr_m <= 60:
+            cfg.ATR_LEN_M = atr_m
+        atr_t = data.get("tech.atr.thin")
+        if atr_t and 2 <= atr_t <= 60:
+            cfg.ATR_LEN_T = atr_t
+
+        htr_w = data.get("tech.htr.wide")
+        if htr_w and 10 <= htr_w <= 60:
+            cfg.HTR_LEN_W = htr_w
+        htr_t = data.get("tech.htr.thin")
+        if htr_t and 10 <= htr_t <= 60:
+            cfg.HTR_LEN_T = htr_t
+
+        rr = data.get("entry.rr.min")
+        if rr and rr >= 2:
+            cfg.R_R = rr
+        tte_max = data.get("entry.tte.max")
+        if tte_max and tte_max <= 3600:
+            cfg.TTE_MAX = tte_max
+        tte_min = data.get("entry.tte.min")
+        if tte_min and tte_min >= 0:
+            cfg.TTE_MIN = tte_min
+        slip = data.get("entry.slip.min")
+        if slip and slip <= 3:
+            cfg.ENTRY_SLIP = slip
+        pos_risk = data.get("entry.pos.risk")
+        if pos_risk and 0 < pos_risk <= 100:
+            cfg.ENTRY_POS_RISK = pos_risk
+        pos_max = data.get("entry.pos.max")
+        if pos_max and 0 < pos_max <= 100:
+            cfg.ENTRY_POS_MAX = pos_max
+
+        stop_market = data.get("stop.market.enable")
+        if stop_market is not None:
+            cfg.STOP_MARKET_ENABLE = stop_market
+        stop_raise = data.get("stop.raise.enable")
+        if stop_raise is not None:
+            cfg.STOP_RAISE = stop_raise
+        raise_rr = data.get("stop.raise.rr")
+        if raise_rr and raise_rr >= 3:
+            cfg.STOP_RAISE_RR = raise_rr
+        raise_fx = data.get("stop.raise.fx")
+        if raise_fx and raise_fx >= 3:
+            cfg.STOP_RAISE_FX = raise_fx
+        raise_val = data.get("stop.raise.val")
+        if raise_val and raise_val >= 2:
+            cfg.STOP_RAISE_VAL = raise_val
+        raise_count = data.get("stop.raise.count")
+        if raise_count and raise_count >= 0:
+            cfg.STOP_RAISE_COUNT = raise_count
+        raise_delay = data.get("stop.raise.delay")
+        if raise_delay and raise_delay >= 5:
+            cfg.STOP_RAISE_DELAY = raise_delay
+
+        rest_len = data.get("rest.len")
+        if rest_len and 12 <= rest_len <= 24:
+            cfg.REST_LEN = rest_len
+        rest6 = data.get("rest.rate6")
+        if rest6 and rest6 >= 0:
+            cfg.REST_RATE6 = rest6
+        rest12 = data.get("rest.rate12")
+        if rest12 and rest12 >= 0:
+            cfg.REST_RATE12 = rest12
+        rest24 = data.get("rest.rate24")
+        if rest24 and rest24 >= 0:
+            cfg.REST_RATE24 = rest24
+        lock_len = data.get("rest.lock.len")
+        if lock_len and 3 <= lock_len <= 24:
+            cfg.REST_LOCK_LEN = lock_len
+        lock_pl = data.get("rest.lock.pl")
+        if lock_pl and 1 <= lock_pl <= 50:
+            cfg.REST_LOCK_PL = lock_pl
+
+        take_perc = data.get("take.takeall.perc")
+        if take_perc and 1 <= take_perc < 100:
+            cfg.TAKE_PERC = take_perc
+        take_val = data.get("take.takeall.val")
+        if take_val and take_val >= 1:
+            cfg.TAKE_VAL = take_val
+        take_market = data.get("take.market.enable")
+        if take_market is not None:
+            cfg.TAKE_MARKET_ENABLE = take_market
+
+        return cfg
 
 ## <!-- [Database] ----->
 def init_db():
