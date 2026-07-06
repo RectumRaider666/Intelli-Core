@@ -1,10 +1,12 @@
 ## <!-- [1] Imports ----->
+from lib.utils import SettingsLoader, Tee, logg, get_db, ts
 from multiprocessing import shared_memory
 from datetime import datetime, timedelta
 from dataclasses import dataclass
 from pathlib import Path
 import numpy as np
 import subprocess
+import logging
 import sqlite3
 import json
 import pytz
@@ -20,17 +22,9 @@ db_path = root / "data" / "data.db"
 
 # /2.2/ Trackers
 up_count = 0
-
-# /2.3/ SharedObject Structure
-IDX_BTC = 0                             # Recent Bitcoin Price
-IDX_AVG = 1                             # Recent Average Bitcoin Price
-IDX_RSI = 2                             # Calculated RSI
-IDX_ATR = 3                             # Calculated Average True Range
-IDX_HTR = 4                             # The Highest True Range Calculation in ATR
-IDX_RBC = 5                             # Ring Buffer Count - The position of the oldest entry in the rolling buffer ring
-IDX_WINDOW = 6                          # The Start of the Rolling Window
-WINDOW_SIZE = 3600                      # The number of positions in the window
 OBJ_SIZE = IDX_WINDOW + WINDOW_SIZE     # The total size of the object
+
+
 
 ## <!-- [3] Helpers ----->
 def create_window():
@@ -59,6 +53,23 @@ def update() -> float:
     candles = get_candles()
     atr(candles)
     return tte
+
+def get_settings() -> Data:
+    cfg = SettingsLoader()
+    logger = logging.getLogger()
+    LEVELS = {
+        "D": logging.DEBUG,
+        "I": logging.INFO,
+        "W": logging.WARNING,
+        "E": logging.ERROR,
+        "F": logging.CRITICAL,
+    }
+    logger.setLevel(LEVELS.get(str(cfg.LOG_LEVEL).upper(), logging.INFO))
+    if not any(isinstance(h, logging.FileHandler) for h in logger.handlers):
+        handler = logging.FileHandler(cfg.LOG_FILE)
+        handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(message)s"))
+        logger.addHandler(handler)
+    return cfg
 
 ## <!-- [4] MATH ----->
 def get_candles():
@@ -94,12 +105,9 @@ def rsi(candles, length:int = 14):
     pass
 
 ## <!-- [5] MAIN ----->
-conn = sqlite3.connect(db_path)
-with open(schema_path, "r") as f:
-    schema = f.read()
-    conn.executescript(schema)
-    conn.commit()
-conn.close()
+init_db()
+
+
 shm, state = create_window()
 ste = update()
 proc = subprocess.Popen([sys.executable, f"{win_script}", shm.name], stdout = subprocess.DEVNULL)

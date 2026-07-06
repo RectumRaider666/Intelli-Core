@@ -45,8 +45,8 @@ class SHM_IDX:
 class Sett:
     """Prepares Default Dynamic Settings & Types"""
     MODE: str = "Paper"
-    LOG_LVL: str = "Info"
-    LOG_FILE: str = "default.log"
+    LOG_LVL: str = "I" ## Debug(D),  Info(I), Warning(W), Error(E), Fatal(F) ##
+    LOG_FILE: Path = settf
     LOG_SIZE: int = 5
     LOG_REMOVE: bool = False
     AVG_LEN: int = 60
