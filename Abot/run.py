@@ -164,3 +164,5 @@ finally:
 # directly, Now worker.py can also be refactored to not have to worry about any piping at all. Just the zero gap handovers, then window just needs to handle the ring buffer
 # at that point, worker and window can almost be combined into one. Windows updating logic can also be refactored to work as a sort of watchdog instead of recieving
 # inputs directly. It can just watch the btc price index block and everytime it changes, update the ring buffer. This will GREATLY reduce I/O overhead
+# we shouyld also add the cfg class and the shmID class to a shared memory object as well, so that child scripts dont need to ALL
+# fetch the configs and settings, and can instead just look at them directly in memory.
