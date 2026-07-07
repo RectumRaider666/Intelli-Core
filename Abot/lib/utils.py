@@ -2,15 +2,16 @@ from cryptography.hazmat.primitives.asymmetric import padding, rsa
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.backends import default_backend
 from cryptography.exceptions import InvalidSignature
-from datetime import datetime, timedelta
+from multiprocessing import shared_memory
 from dataclasses import dataclass
+from datetime import datetime, timedelta
 from pathlib import Path
+import numpy as np
 import urllib.parse
 import aiosqlite
 import functools
 import requests
 import sqlite3
-import logging
 import base64
 import json
 import pytz
@@ -24,22 +25,32 @@ with open(str(ROOT / "doc" / "api.key"), "r") as f:
     key = f.read().strip()
 
 ## <!-- [Settings] ----->
+def get_set():
+    IDX = idx()
+    CFG = SettingsLoader().load()
+    try:
+        SHM = shared_memory.SharedMemory(name='kbot.window.shm')
+        STATE = np.ndarray((IDX.WINDOW + CFG.WINDOW_SIZE,), dtype=np.float64, buffer=SHM.buf)
+        return IDX, CFG, SHM, STATE
+    except FileNotFoundError:
+        return None
+
 @dataclass
-class SHM_IDX:
+class idx:
     """Applies Strict Static Schema to the SHM Index"""
-    IDX_BTC = 1
-    IDX_TTE = 2
-    IDX_AVG = 3
-    IDX_RSI_S = 4
-    IDX_RSI_L = 5
-    IDX_ATR_T = 6
-    IDX_ATR_M = 7
-    IDX_ATR_W = 8
-    IDX_HTR_T = 9
-    IDX_HTR_W = 10
-    IDX_ACC = 11
-    IDX_RBC = 12
-    IDX_WINDOW = 13
+    BTC = 1
+    TTE = 2
+    AVG = 3
+    RSI_S = 4
+    RSI_L = 5
+    ATR_T = 6
+    ATR_M = 7
+    ATR_W = 8
+    HTR_T = 9
+    HTR_W = 10
+    ACC = 11
+    RBC = 12
+    WINDOW = 13
 
 @dataclass
 class Sett:
@@ -47,8 +58,6 @@ class Sett:
     MODE: str = "Paper"
     LOG_LVL: str = "I" ## Debug(D),  Info(I), Warning(W), Error(E), Fatal(F) ##
     LOG_FILE: Path = settf
-    LOG_SIZE: int = 5
-    LOG_REMOVE: bool = False
     WINDOW_SIZE: int = 3600
     AVG_LEN: int = 60
     RSI_LEN_S: int = 9
@@ -93,9 +102,12 @@ class SettingsLoader:
         self.path = path
 
     def load(self):
+        """Parse settings.json and apply changes within thresholds"""
         with open(self.path, "r") as f:
             data = json.load(f)
         cfg = Sett()
+
+        """Setting System Mode -- Implimented"""
         if data.get("sys.mode.paper"):
             cfg.MODE = "Paper"
         elif data.get("sys.mode.train"):
@@ -105,15 +117,13 @@ class SettingsLoader:
         elif data.get("sys.mode.live"):
             cfg.MODE = "Live"
 
+        """Handeling Logs -- Implimented"""
         cfg.LOG_LVL = data.get("log.lvl", cfg.LOG_LVL)
         custom = data.get("log.custom")
         if custom and os.path.exists(custom):
             cfg.LOG_FILE = custom
-        size = data.get("log.max")
-        if size and size >= 1:
-            cfg.LOG_SIZE = size
-        cfg.LOG_REMOVE = bool(data.get("log.remove", cfg.LOG_REMOVE))
 
+        """CFX Management -- Implimented"""
         life = data.get("cfx.lifetime")
         if life and 10 <= life <= 120:
             cfg.CFX_LIFE = life
@@ -124,6 +134,7 @@ class SettingsLoader:
         if overlap and 3 <= overlap <= 60:
             cfg.CFX_OVERLAP = overlap
 
+        """Rolling Windows Size -- Implimented"""
         win = data.get("window.buffer.size")
         if win and win >= 3600:
             cfg.WINDOW_SIZE = win
@@ -131,6 +142,7 @@ class SettingsLoader:
         if avg and avg >= 60:
             cfg.AVG_LEN = avg
 
+        """Calculating Indicators -- Implimented(minus RSI)"""
         rsi_s = data.get("tech.rsi.short")
         if rsi_s and 2 <= rsi_s <= 60:
             cfg.RSI_LEN_S = rsi_s
@@ -143,7 +155,6 @@ class SettingsLoader:
         rsi_low = data.get("tech.rsi.low")
         if rsi_low and rsi_low < 50:
             cfg.RSI_LOW = rsi_low
-
         atr_w = data.get("tech.atr.wide")
         if atr_w and 2 <= atr_w <= 60:
             cfg.ATR_LEN_W = atr_w
@@ -153,7 +164,6 @@ class SettingsLoader:
         atr_t = data.get("tech.atr.thin")
         if atr_t and 2 <= atr_t <= 60:
             cfg.ATR_LEN_T = atr_t
-
         htr_w = data.get("tech.htr.wide")
         if htr_w and 10 <= htr_w <= 60:
             cfg.HTR_LEN_W = htr_w
@@ -161,25 +171,7 @@ class SettingsLoader:
         if htr_t and 10 <= htr_t <= 60:
             cfg.HTR_LEN_T = htr_t
 
-        rr = data.get("entry.rr.min")
-        if rr and rr >= 2:
-            cfg.R_R = rr
-        tte_max = data.get("entry.tte.max")
-        if tte_max and tte_max <= 3600:
-            cfg.TTE_MAX = tte_max
-        tte_min = data.get("entry.tte.min")
-        if tte_min and tte_min >= 0:
-            cfg.TTE_MIN = tte_min
-        slip = data.get("entry.slip.min")
-        if slip and slip <= 3:
-            cfg.ENTRY_SLIP = slip
-        pos_risk = data.get("entry.pos.risk")
-        if pos_risk and 0 < pos_risk <= 100:
-            cfg.ENTRY_POS_RISK = pos_risk
-        pos_max = data.get("entry.pos.max")
-        if pos_max and 0 < pos_max <= 100:
-            cfg.ENTRY_POS_MAX = pos_max
-
+        """Risk Managment -- Not implimented"""
         stop_market = data.get("stop.market.enable")
         if stop_market is not None:
             cfg.STOP_MARKET_ENABLE = stop_market
@@ -201,7 +193,17 @@ class SettingsLoader:
         raise_delay = data.get("stop.raise.delay")
         if raise_delay and raise_delay >= 5:
             cfg.STOP_RAISE_DELAY = raise_delay
+        take_perc = data.get("take.takeall.perc")
+        if take_perc and 1 <= take_perc < 100:
+            cfg.TAKE_PERC = take_perc
+        take_val = data.get("take.takeall.val")
+        if take_val and take_val >= 1:
+            cfg.TAKE_VAL = take_val
+        take_market = data.get("take.market.enable")
+        if take_market is not None:
+            cfg.TAKE_MARKET_ENABLE = take_market
 
+        """Bad Streak RESTing Config -- Not implimented"""
         rest_len = data.get("rest.len")
         if rest_len and 12 <= rest_len <= 24:
             cfg.REST_LEN = rest_len
@@ -221,16 +223,25 @@ class SettingsLoader:
         if lock_pl and 1 <= lock_pl <= 50:
             cfg.REST_LOCK_PL = lock_pl
 
-        take_perc = data.get("take.takeall.perc")
-        if take_perc and 1 <= take_perc < 100:
-            cfg.TAKE_PERC = take_perc
-        take_val = data.get("take.takeall.val")
-        if take_val and take_val >= 1:
-            cfg.TAKE_VAL = take_val
-        take_market = data.get("take.market.enable")
-        if take_market is not None:
-            cfg.TAKE_MARKET_ENABLE = take_market
-
+        """Trade Entry Constraints -- Not implimented"""
+        rr = data.get("entry.rr.min")
+        if rr and rr >= 2:
+            cfg.R_R = rr
+        tte_max = data.get("entry.tte.max")
+        if tte_max and tte_max <= 3600:
+            cfg.TTE_MAX = tte_max
+        tte_min = data.get("entry.tte.min")
+        if tte_min and tte_min >= 0:
+            cfg.TTE_MIN = tte_min
+        slip = data.get("entry.slip.min")
+        if slip and slip <= 3:
+            cfg.ENTRY_SLIP = slip
+        pos_risk = data.get("entry.pos.risk")
+        if pos_risk and 0 < pos_risk <= 100:
+            cfg.ENTRY_POS_RISK = pos_risk
+        pos_max = data.get("entry.pos.max")
+        if pos_max and 0 < pos_max <= 100:
+            cfg.ENTRY_POS_MAX = pos_max
         return cfg
 
 ## <!-- [Database] ----->
@@ -261,12 +272,6 @@ def ts() -> str:
     return now.strftime('%Y-%m-%d %H:%M:%S')
 
 ## <!-- [Logging] ----->
-logging.basicConfig(
-    filename = settf,
-    level = logging.INFO,
-    format = "%(asctime)s | %(levelname)s | %(message)s"
-)
-
 class Tee:
     """Serves as the logging buffer & flush"""
     def __init__(self, logfile):

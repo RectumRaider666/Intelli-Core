@@ -1,194 +1,51 @@
 {
-
-// Setting.json --Users --Draft 1
-
-// System Mode Setting //
-// **Note: If two modes are enabled at once, the lowest numbered pri mode will take priority. 
-// **Note: An Invalid value in any system.mode setting will force all but Free Paper-Mode to be false.
-
-    // Enables Free Paper-Mode (pri #1)
-    "sys.mode.paper": true,
-
-    // Enables Tracked Paper-Mode (pri #2)
-    "sys.mode.train": false,
-
-    // Enables Strat-Testing Mode (pri #3)
-    "sys.mode.test": false,
-
-    // Enables Real-World Trading (pri #4)
-    "sys.mode.live": false,
-
-    // Enables Trading Between 4-5pm
-    "sys.trade.16": false,
-
-
-
-// Logging Control //
-
-    // logging level (Def=info)
-    "log.level": "info",
-
-    // Send Logs to a custom file (Def=SystemData)
-    "log.custom": null,
-
-    // Max log storage size (Mb:Def=5)
-    "log.max": 5,
-
-    // Auto-Delete expired logs (Def=F)
-    "log.exp.remove": false,
-
-
-
- // Component CFX Configs //
-
-    // How long a process runs (Min:Def=60)
-    "cfx.lifetime": 60,
-
-    // How often fetch requests are sent (ms:Def=1000)
-    "cfx.fetch": 1000,
-
-    // How long an old process overlaps a new one (S:Def=10)
-    "cfx.overlap": 10,
-
-
-// Rolling Window Sizing //
-
-    // Total entries held by ring-buffer window (Def=3600)
-    "window.buffer.size": 3600,
-
-    // Total entries held by AVG window (Def=60)
-    "window.avg.size": 60,
-
-
-
-// Technical Indicator Calculation Preference //
-
-  //RSI
-    // Rsi Short Length
-    "tech.rsi.short": 9,
-
-    // Rsi Long Length
-    "tech.rsi.long": 24,
-
-    // Rsi OverBought Value
-    "tech.rsi.high": 80,
-
-    // Rsi OverSold Value
-    "tech.rsi.low": 20,
-
-  //ATR
-    // Wide ATR Width
-    "tech.atr.wide": 40,
-
-    // Mid ATR Width
-    "tech.atr.mid": 15,
-
-    //Thin ATR Width
-    "tech.atr.thin": 7,
-
-  //HTR
-    // Wide HTR Width
-    "tech.htr.wide": 50,
-
-    // Thin HTR Width
-    "tech.htr.thin": 10,
-
-
-
-// Trading Constraints and Risk Managment //
-
-  //Entry - Buy risky shit to earn a possible reward
-    // Min R:R rate for Entry (Def=2)
-    "entry.rr.min": 2,
-
-    // Max TTE for Entry (S:Def=900)
-    "entry.tte.max":  900,
-
-    // Min TTE for Entry (S:Def=30)
-    "entry.tte.min": 30,
-
-    // Min Entry Slip for Entry (Cents:Def 2)
-    "entry.slip.min": 2,
-
-    // Max Account % per Trade
-    "entry.pos.risk": 5,
-
-    // Max Account % in all Trades
-    "entry.pos.max": 12,
-
-
-  //Stop - Preplanned Exits to minimize loss
-    // Place a market order at time of Stop Trigger
-    "stop.market.enable": true,
-   
-    // Enable Stop-Raising (Def=True)
-    "stop.raise.enable": true,
-
-    // Min Price Increase per Stop-Raise (Def=3)
-    "stop.raise.rr": 3,
-
-    // Min Time at Increased price to Stop-Raise (S)
-    "stop.raise.fx": 10,
-
-    // Max Stop-Raise Value (Cents:Def=2)
-    "stop.raise.val": 2,
-
-    // Max Stop Raises per Trade (Def=3)
-    "stop.raise.count": 3,
-
-    // Stop Raise delay (S)
-    "stop.raise.delay": 60,
-
-
-  //Take - Realizing Profits Structurally
-
-   //Inc-Sells : Selling incremental portions of the trade to reduce entry cost & risk
-    // Enable Market Sells at Take (Def=False) Resorts to Limits if F
-    "take.market.enable": false,
-
-    // Enable Take Incremental Sells (Def=True)
-    "take.inc.enable": true,
-
-    // Min PL to takeall profits
-    "take.takeall.perc": 10,
-
-    // Min Value to takeall profits ($)
-    "take.takeall.value": 300,
-
-    // Target Entry Coverage of Take Inc-Sells
-    "take.inc.coverage": 60,
-
-    // Min TTE for Inc-Sells (S)
-    "take.inc.tte": 120,
-
-    // Min Growth Room for Inc-Sells (Cents)
-    "take.inc.room": 5,
-
-  //Shoot-Selling : Wait to pass TakeProfit, at first drawback, market dump the entire trade
-    // Enable Take Shooting (Def=True)
-    "take.shoot.enable": true,
-
-    // Min Drop to Take Shoot-Sell (Cents)
-    "take.shoot.size": 2,
-
-  
-  //Rest- forcing you to JUST GIVE IT A REST ALREADY
-    // REST timer length (Hr:Def=16)
-    "rest.len": 16,
-
-    // Total lost trades in rate to trigger REST
-    "rest.rate.6": 3,
-
-    // Higher comp rate to lower guardrail sensitivity
-    "rest.rate.12": 5,
-
-    // 1:1 Per day comp rate for lowest guardrail sensitivity
-    "rest.rate.24": 10,
-
-    // Consecutive losses to trigger LOCK-REST
-    "rest.lock.len": 4,
-
-    // Max Daily Acc PL Loss before LOCK-REST
-    "rest.lock.pl": 15
-    
+  "sys.mode.paper": true,
+  "sys.mode.train": false,
+  "sys.mode.test": false,
+  "sys.mode.live": false,
+  "sys.trade.16": false,
+  "log.level": "info",
+  "log.custom": null,
+  "cfx.lifetime": 60,
+  "cfx.fetch": 1000,
+  "cfx.overlap": 10,
+  "window.buffer.size": 3600,
+  "window.avg.size": 60,
+  "tech.rsi.short": 9,
+  "tech.rsi.long": 24,
+  "tech.rsi.high": 80,
+  "tech.rsi.low": 20,
+  "tech.atr.wide": 40,
+  "tech.atr.mid": 15,
+  "tech.atr.thin": 7,
+  "tech.htr.wide": 50,
+  "tech.htr.thin": 10,
+  "entry.rr.min": 2,
+  "entry.tte.max": 900,
+  "entry.tte.min": 30,
+  "entry.slip.min": 2,
+  "entry.pos.risk": 5,
+  "entry.pos.max": 12,
+  "stop.market.enable": true,
+  "stop.raise.enable": true,
+  "stop.raise.rr": 3,
+  "stop.raise.fx": 10,
+  "stop.raise.val": 2,
+  "stop.raise.count": 3,
+  "stop.raise.delay": 60,
+  "take.market.enable": false,
+  "take.inc.enable": true,
+  "take.takeall.perc": 10,
+  "take.takeall.value": 300,
+  "take.inc.coverage": 60,
+  "take.inc.tte": 120,
+  "take.inc.room": 5,
+  "take.shoot.enable": true,
+  "take.shoot.size": 2,
+  "rest.len": 16,
+  "rest.rate.6": 3,
+  "rest.rate.12": 5,
+  "rest.rate.24": 10,
+  "rest.lock.len": 4,
+  "rest.lock.pl": 15
 }

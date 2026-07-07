@@ -1,62 +1,86 @@
-from multiprocessing import shared_memory
 from pathlib import Path
-import numpy as np
-import subprocess
-import json
+from utils import get_set
+import asyncio
 import sys
-import os
 
-shmID = sys.argv(1)
-cfg = sys.argv(2)
+LIB = Path(__file__).parent
+WORKER = LIB / "cfx.py"
 
-for f in os.listdir(Path("/dev/shm")):
-    if f == "kbot.window.shm":
-        shm = shared_memory.SharedMemory(name=str(f))
-        state = np.ndarray((shmID.IDX_WINDOW + cfg.WINDOW_SIZE,), dtype=np.float64, buffer=shm.buf)
-lib = Path(__file__).parent
-worker_script = lib / "worker.py"
-recent = []
-
-proc = subprocess.Popen(
-    [
+async def start_cfx_worker(worker_id: int):
+    """Start cfx.py in the background for a worker slot."""
+    return await asyncio.create_subprocess_exec(
         sys.executable,
-        str(worker_script)
-    ],
-    stdout=subprocess.PIPE,
-    stderr=subprocess.STDOUT,
-    text=True,
-    bufsize=1,
-)
-try:
+        str(WORKER),
+        stdout=asyncio.subprocess.DEVNULL,
+        stderr=asyncio.subprocess.DEVNULL,
+    )
+
+async def watch_prices(STATE, IDX, CFG):
+    """Push incoming BTC values into the shared ring buffer and maintain a moving average."""
+    recent = []
+    last = None
     while True:
-        line = proc.stdout.readline()
-        if not line:
-            if proc.poll() is not None:
-                break
-            continue
-        line = line.strip()
-        if not line:
-            continue
-        try:
-            payload = json.loads(line)
-        except json.JSONDecodeError:
-            continue
-        if "btc" in payload:
-            price = float(payload["btc"])
-            state[shmID.IDX_BTC] = price
-            ring_pos = int(state[shmID.IDX_RBC])
-            state[shmID.IDX_WINDOW + ring_pos] = price
-            state[shmID.IDX_RBC] = (ring_pos + 1) % cfg.WINDOW_SIZE
-        if len(recent) >= cfg.AVG_LENGTH:
-            recent.pop(0)
-        recent.append(price)
-        if len(recent) == 60:
-            state[shmID.IDX_AVG] = sum(recent) / len(recent)
-finally:
-    if proc.poll() is None:
-        proc.terminate()
-        try:
-            proc.wait(timeout=2)
-        except subprocess.TimeoutExpired:
-            proc.kill()
-    shm.close()
+        current = STATE[IDX.BTC]
+        if current != last:
+            last = current
+            ring_pos = int(last) % CFG.WINDOW_SIZE
+            STATE[IDX.WINDOW + ring_pos] = last
+            STATE[IDX.RBC] = (ring_pos + 1) % CFG.WINDOW_SIZE
+            if len(recent) >= CFG.AVG_LEN:
+                recent.pop(0)
+            recent.append(last)
+            if len(recent) == CFG.AVG_LEN:
+                STATE[IDX.AVG] = sum(recent) / len(recent)
+        await asyncio.sleep(0.5)
+
+async def rotate_workers(CFG):
+    """Rotate cfx worker processes with a short overlap window."""
+    worker_id = 1
+    current = await start_cfx_worker(worker_id)
+    try:
+        while True:
+            await asyncio.sleep(CFG.CFX_LIFETIME)
+            worker_id += 1
+            nxt = await start_cfx_worker(worker_id)
+            await asyncio.sleep(CFG.CFX_OVERLAP)
+            if current.returncode is None:
+                current.terminate()
+                try:
+                    await asyncio.wait_for(current.wait(), timeout=5)
+                except asyncio.TimeoutError:
+                    current.kill()
+                    await current.wait()
+            current = nxt
+    finally:
+        if current is not None and current.returncode is None:
+            current.terminate()
+            try:
+                await asyncio.wait_for(current.wait(), timeout=5)
+            except asyncio.TimeoutError:
+                current.kill()
+                await current.wait()
+
+async def main():
+    """Run the shared state watcher and cfx worker rotation together."""
+    IDX, CFG, SHM, STATE = get_set()
+    if STATE is None:
+        raise RuntimeError("Shared memory state is unavailable")
+    monitor_task = None
+    rotate_task = None
+    try:
+        monitor_task = asyncio.create_task(watch_prices(STATE, IDX, CFG))
+        rotate_task = asyncio.create_task(rotate_workers(CFG))
+        await asyncio.gather(monitor_task, rotate_task)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        if monitor_task is not None:
+            monitor_task.cancel()
+        if rotate_task is not None:
+            rotate_task.cancel()
+        await asyncio.gather(monitor_task, rotate_task, return_exceptions=True)
+        if SHM is not None:
+            SHM.close()
+
+if __name__ == "__main__":
+    asyncio.run(main())
