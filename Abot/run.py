@@ -2,7 +2,6 @@
 from lib.utils import SettingsLoader, SHM_IDX, Tee, logg, init_db, ts
 from multiprocessing import shared_memory
 from datetime import datetime, timedelta
-from dataclasses import dataclass
 from pathlib import Path
 import numpy as np
 import subprocess
@@ -120,7 +119,7 @@ def rsi(candles, length:int = 14):
 shmID, cfg, logger = get_settings()
 shm, state = create_window()
 ste, now = update()
-proc = subprocess.Popen([sys.executable, f"{win_script}", shm.name], stdout = subprocess.DEVNULL)
+proc = subprocess.Popen([sys.executable, f"{win_script}", shmID, cfg], stdout = subprocess.DEVNULL)
 upcount = 0
 try:
     while True:
@@ -158,3 +157,10 @@ finally:
     proc.terminate()
     shm.close()
     shm.unlink()
+
+
+
+# instead of piping the data back from cfx through worker, then through window, just have cfx itself have access to the shared memeory block so it can change the price
+# directly, Now worker.py can also be refactored to not have to worry about any piping at all. Just the zero gap handovers, then window just needs to handle the ring buffer
+# at that point, worker and window can almost be combined into one. Windows updating logic can also be refactored to work as a sort of watchdog instead of recieving
+# inputs directly. It can just watch the btc price index block and everytime it changes, update the ring buffer. This will GREATLY reduce I/O overhead
