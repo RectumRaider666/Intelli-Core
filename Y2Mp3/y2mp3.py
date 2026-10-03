@@ -5,8 +5,9 @@ import sys
 from pathlib import Path
 from yt_dlp import YoutubeDL as YD
 import configparser
+import subprocess
 
-VERSION = '0.1.1'
+VERSION = '0.1.2'
 DEPS = [
     "yt_dlp",
     "ffmpeg",
@@ -20,6 +21,38 @@ output_dir.mkdir(parents=True, exist_ok=True)
 targets_file.touch(exist_ok=True)
 configs = configparser.Config(targets_file)
 
+def valid_url:str):
+    try:
+    if not metadata_dict:
+        return
+    
+    cmd = ["exiftool"]
+    for key, value in metadata_dict.items():
+        cmd.append(f"-{key}={value}")
+    cmd.append(str(filepath))
+    
+    try:
+        subprocess.run(cmd, check=True, capture_output=True)
+        print(f"✓ Metadata applied to {filepath.name}")
+    except subprocess.CalledProcessError as e:
+        print(f"✗ Failed to apply metadata: {e.stderr.decode()}")        result = urlparse(string)
+        return all([result.scheme, result.netloc])
+    except:
+        return False
+    
+def apply_meta (file_path:str, metadict:dict):
+    if not metadata_dict:
+        return
+    cmd = ["exiftool"]
+    for key, value in metadata_dict.items():
+        cmd.append(f"-{key}={value}")
+    cmd.append(str(filepath))
+    try:
+        subprocess.run(cmd, check=True, capture_output=True)
+        print(f"✓ Metadata applied to {filepath.name}")
+    except subprocess.CalledProcessError as e:
+        print(f"✗ Failed to apply metadata: {e.stderr.decode()}")
+    
 def cli():
     global output_dir, targets_file 
     parser = argparse.ArgumentParser(description="Loop download & format mp3 audio from Youtube Links via Ytdlp & exiftool")
@@ -39,7 +72,7 @@ def cli():
                 output_dir.mkdir(parents=True, exist_ok=True)
             else:
                 raise NotADirectoryError("Execution stopped: No valid output directory selected.")
-                
+
 def fetcher():
     opts = {
         'format': "bestaudio/best",
@@ -50,8 +83,9 @@ def fetcher():
             'preferredquality': 320
         }]
     }
-    
-    url = "for line in file, str(line), download"
+    with open(targets_file, 'r') as f:
+        for line_num, line in enumerate(f, 1)
+
     with YD(opts) as ydl:
         ydl.download([url])
 
