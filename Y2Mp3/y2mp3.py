@@ -6,7 +6,6 @@ from pathlib import Path
 from yt_dlp import YoutubeDL as YD
 import configparser
 
-
 VERSION = '0.1.1'
 DEPS = [
     "yt_dlp",
@@ -20,7 +19,6 @@ targets_file = SCRIPT_DIR / "targets.txt"
 output_dir.mkdir(parents=True, exist_ok=True)
 targets_file.touch(exist_ok=True)
 configs = configparser.Config(targets_file)
-
 
 def cli():
     global output_dir, targets_file 
