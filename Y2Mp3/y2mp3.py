@@ -9,7 +9,7 @@ from urllib.parse import urlparse
 import logging
 
 # -- Metadata -----
-VERSION = '0.1.10'
+VERSION = '0.1.11'
 DEV = 'RectumRaider666'
 DEPS = [
     "yt_dlp",
@@ -74,11 +74,17 @@ def fetcher(link:str) -> None | str:
     opts = {
         'format': "bestaudio/best",
         'outtmpl': os.path.join(output_dir, "%(title)s.%(ext)s"),
-        'postprocessors': [{
-            'key': "FFmpegExtractAudio",
-            'preferredcodec': "mp3",
-            'preferredquality': 320
-        }]
+        'writethumbnail': True,
+        'postprocessors': [
+            {
+                'key': "FFmpegExtractAudio",
+                'preferredcodec': "mp3",
+                'preferredquality': 320
+            },
+            {
+                'key': "EmbedThumbnail"
+            }
+        ]
     }
     try:
         with YD(opts) as ydl:
